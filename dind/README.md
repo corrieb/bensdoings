@@ -11,10 +11,10 @@ You can use these images if you want a simple way to spin up Docker hosts on vSp
 **Build**
 
 Build Dockerfile with regular Docker using: 
-```docker build -t <registry>/<imageid> .```
+``docker build -t <registry>/<imageid> .``
 
 Push to a registry: 
-```docker login <registry>; docker push <registry>/<imageid>```
+``docker login <registry>; docker push <registry>/<imageid>``
 
 Example:
 
@@ -28,13 +28,13 @@ docker push 10.118.69.100/test/debian-dind-1.13.1
 **Run with Public IP**
 
 This starts a Docker host with an IP address on the public vSphere network assigned to the Virtual Container Host
-(Note that this assumes that the public network was added on VCH creation as a --container-network)
+(Note that this assumes that the public network was added on VCH creation as a ``--container-network``)
 
-```docker run -d -net=<vsphere-public-network> <registry>/<imageid>```
+``docker run -d -net=<vsphere-public-network> <registry>/<imageid>``
 
-Find IP address of the deployed VM: ```docker inspect <containerid> | grep IPAddress```
+Find IP address of the deployed VM: ``docker inspect <containerid> | grep IPAddress``
 
-Run a test container in new Docker host: ```docker -H <ipaddress>:2376 run --rm hello-world```
+Run a test container in new Docker host: ``docker -H <ipaddress>:2376 run --rm hello-world``
 
 Example:
 
@@ -52,14 +52,14 @@ docker -H 10.118.69.89:2376 run --rm hello-world
 
 This is variation on the above example, except in this case, the Docker host does not get an identity on the public network. As such, you need to address it using port mapping on the VIC endpoint IP. In this example, we pick port 10001.
 
-```docker run -d -p 10001:2376 <registry>/<imageid>```
+``docker run -d -p 10001:2376 <registry>/<imageid>``
 
 Run a test container in new Docker host: 
-```docker -H <vic-endpoint-ip>:10001 run --rm hello-world```
+``docker -H <vic-endpoint-ip>:10001 run --rm hello-world``
 
 **Setting memory and CPU on the Docker host**
 
-Add ```-m <mem> and --cpuset-cpus <vcpus>``` on the docker command-line to set resource constraints for the docker host
+Add ``-m <mem> and --cpuset-cpus <vcpus>`` on the docker command-line to set resource constraints for the docker host
 
 Example:
 
@@ -69,11 +69,11 @@ docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork 10.118.69.100/test/pho
 
 **Alternative to using docker -H**
 
-For simplicity, you can set DOCKER_HOST=<ipaddress:port> instead of using -H on the docker command
+For simplicity, you can set ``DOCKER_HOST=<ipaddress:port>`` instead of using ``-H`` on the docker command
 
 **Passing options through to the Docker daemon**
 
-Note that in the Dockerfiles, $DOCKER_OPTS is added as an environment variable. That means you can simply pass options to the Docker daemon via the command that starts the Docker host using the -e flag. This is particularly useful for things like setting an insecure registry to pull from.
+Note that in the Dockerfiles, ``$DOCKER_OPTS`` is added as an environment variable. That means you can simply pass options to the Docker daemon via the command that starts the Docker host using the ``-e`` flag. This is particularly useful for things like setting an insecure registry to pull from.
 
 Example:
 
