@@ -19,4 +19,4 @@ RUN tdnf install -y iptables net-tools docker 1.12.6-1.ph1
 
 EXPOSE 2376
 
-CMD /usr/bin/dockerd -H tcp://0.0.0.0:2376
+CMD /usr/bin/dockerd -H tcp://0.0.0.0:2376 $DOCKER_OPTS
