@@ -26,7 +26,7 @@ Run a test container in new Docker host: ```docker -H <ipaddress>:2376 run --rm 
 
 **Run with Port Mapping**
 
-```docker run -d -p 10001:2376 <registry>/<imageid>``
+```docker run -d -p 10001:2376 <registry>/<imageid>```
 
 Run a test container in new Docker host: 
 ```docker -H <vchipaddress>:1001 run --rm hello-world```
