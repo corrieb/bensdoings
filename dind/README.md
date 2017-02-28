@@ -55,7 +55,7 @@ This is variation on the above example, except in this case, the Docker host doe
 ```docker run -d -p 10001:2376 <registry>/<imageid>```
 
 Run a test container in new Docker host: 
-```docker -H <vchipaddress>:10001 run --rm hello-world```
+```docker -H <vic-endpoint-ip>:10001 run --rm hello-world```
 
 **Setting memory and CPU on the Docker host**
 
