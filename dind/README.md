@@ -105,3 +105,25 @@ docker inspect dind-test-ssh | grep IPAddress
 ssh vmware@10.118.69.47
 vmware@8540f8071200:~$ sudo docker run busybox date
 ```
+
+**Persist local state between invocations**
+
+If you want your nested Docker hosts to be particularly short-lived, but preserve the image cache and container state in between invocations, you can create a volume and mount it to /var/lib/docker. This is particularly useful in the case of Docker build or running some tests, where you may want the VM to exist only for the duration of the build or test, to save resources.
+
+Behind the scenes, this will create a formatted VMDK that's mounted as a disk to the location specified. The VMDK can only be mounted to one containerVM at a time. 
+
+Example:
+
+```
+docker volume create --name images
+docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoings/dind-debian:1.13.1
+docker -H 10.118.69.50:10001 pull busybox
+# Note Docker will pull busybox to the empty volume
+
+docker kill dind-test
+docker rm dind-test
+
+docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoings/dind-debian:1.13.1
+docker -H 10.118.69.50:10001 pull busybox
+# Note busybox image is already there
+```
