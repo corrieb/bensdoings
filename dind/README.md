@@ -127,3 +127,44 @@ docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoing
 docker -H 10.118.69.50:10001 pull busybox
 # Note busybox image is already there
 ```
+
+**Docker Build Scenarios**
+
+VIC engine itself does not currently support Docker build, but the simplicity of being able to run builds in a nested Docker host - particularly with the speed and efficiency of an overlay fileysystem in a single VMDK, makes this an attractive option. This section explores some simple techniques to using nested Docker hosts for Docker build.
+
+1. Basic Scenario
+
+Simply running the nested Docker host in dameon mode and setting DOCKER_HOST to the address of the nested Docker engine works really well. This is because the remote Docker client will automatically send the whole build context (the current directory tree) to the VM, unpack it and run Docker build on it. The result will exist in the local image cache, but can then easily be pushed to a registry.
+
+As an example, let's build a trivial Dockerfile using a nested Docker host, push it to DockerHub and then run it in VIC.
+
+```
+docker run -d -p 10001:2376 --name dind-test bensdoings/dind-debian:1.13.1
+echo -e "FROM busybox\n\nCMD echo \"Hello Ben\"" > Dockerfile
+
+# Set the Docker client to point at the new nested host
+export DOCKER_HOST=10.118.69.50:10001
+
+# I usually run docker ps at this point to wake up and initialize the daemon
+docker ps
+
+# Build and test the new Dockerfile
+docker build -t bensdoings/silly-test .
+docker run bensdoings/silly-test
+> Hello Ben
+
+# Make sure I'm logged in to Docker Hub
+docker login
+docker push bensdoings/silly-test
+
+# Now switch the Docker client back to the main Docker endpoint exposed by VIC
+# Note that it's just a different port on the same IP because we used Port Mapping above
+export DOCKER_HOST=10.118.69.50:2375
+docker run bensdoings/silly-test
+
+# VIC should now download the Docker image from Docker Hub and run the command in a busybox containerVM
+
+# Clean up
+docker kill dind-test
+docker rm dind-test
+```
