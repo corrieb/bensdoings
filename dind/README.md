@@ -25,6 +25,13 @@ docker build -t 10.118.69.100/test/debian-dind:1.13.1 .
 docker push 10.118.69.100/test/debian-dind:1.13.1
 ```
 
+Or if you simply want to use the versions I built:
+
+```
+docker pull bensdoings/dind-photon:1.12.6
+docker pull bensdoings/dind-debian:1.13.1
+```
+
 **Run with Public IP**
 
 This starts a Docker host with an IP address on the public vSphere network assigned to the Virtual Container Host
@@ -80,4 +87,21 @@ Example:
 ```
 docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork 10.118.69.100/test/photon-dind:1.12
 docker -H 10.118.69.85:2376 pull 10.118.69.100/test/foobedoo
+```
+
+**Run Docker locally with SSH server**
+
+If you'd prefer to login to a new Docker host and run Docker locally, there's an example Dockerfile in ``/with-ssh/``. 
+
+Using sshd is more convenient than starting the container with a shell using ``docker run -it`` because if you exit such a container, it will shut down. You would also have to remember to start the docker daemon manually each time.
+
+This example image is set up with a default user and password of vmware/vmware - so obviously you may want to consider changing that
+
+Example:
+
+```
+docker run -d --name=dind-test-ssh --net=ExternalNetwork bensdoings/dind-debian-ssh:1.13.1
+docker inspect dind-test-ssh | grep IPAddress
+ssh vmware@10.118.69.47
+vmware@8540f8071200:~$ sudo docker run busybox date
 ```
