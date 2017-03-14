@@ -9,13 +9,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
     curl \
     apt-transport-https \
+    software-properties-common \
+    ca-certificates \
     gnupg2 \
-    && apt-key adv \
-    --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-    --recv-keys 58118E89F3A912897C070ADBF76221572C52609D \
-    && echo "deb https://apt.dockerproject.org/repo debian-jessie main" >> /etc/apt/sources.list.d/docker.list \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+    && add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/debian \
+       $(lsb_release -cs) \
+       stable" \
     && DEBIAN_FRONTEND=noninteractive apt-get update -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get -yy -q install docker-engine
+    && DEBIAN_FRONTEND=noninteractive apt-get -yy -q install docker-ce
 
 EXPOSE 2376
 
