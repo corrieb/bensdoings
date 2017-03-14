@@ -1,6 +1,8 @@
 # Purpose of this Dockerfile is to create a VIC image that runs nested Docker that can be accessed remotely
 # You can use this image to build Docker images, general development, run tests etc.
 
+# Note that this doens't work on VIC 0.9.0 due to https://github.com/vmware/vic/issues/3858
+
 # See README for usage
 
 FROM debian:jessie
