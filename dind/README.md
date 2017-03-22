@@ -170,3 +170,44 @@ docker run bensdoings/silly-test
 docker kill dind-test
 docker rm dind-test
 ```
+
+**Creating a Sealed Appliance with Docker Compose**
+
+The whole purpose of Docker Compose is to download one or more images and then spin up containers, volumes, networking etc. The idea is that you should be able to create an application from a number of containerized services which are tightly-coupled in some way. VIC itself is supporting the Compose capabilities to allow you to spin up multiple containerVMs with vSphere networking, storage etc.
+
+As such, when you combine native Docker Compose with the VIC nested Docker model, you can create a sealed appliance with no SSH access, no remote Docker API and just have it bootstrap from the Compose file after booting. 
+
+There are two ways this can be achieved, the dynamic way and the static way. 
+
+1. Dynamic
+
+The dynamic method involves passing the Compose file to the containerVM as part of the ``docker create`` or ``docker run`` commands. The dynamic method always requires subsequent pulling of the requisite images before the application can start, unless a persistent volume is used for the image cache (see above).
+
+An example Dockerfile demonstrating the dynamic method is in ``/compose/dynamic``. It adds docker-compose binaries to the existing Photon dind image. The command serializes the yml to a file, starts the Docker engine, waits for it to start and then runs ``docker-compose up``. The lifespan of the containerVM is tied to the lifespan of the docker-compose process.
+
+As an example, let's run the Docker Wordpress demo
+
+```
+# Start by creating a docker-compose.yml locally. See https://docs.docker.com/compose/wordpress/#define-the-project
+
+# Then pass in the contents of the compose file as an environment variable
+# Note that we're exporting port 8000, which is defined in the example Compose file as the HTTP port
+# Note also that if you miss out the -d, you will attach to the output of docker-compose itself. This is OK, but ctrl-C doesn't work
+# As with previous examples, we can pass options to the Docker engine with DOCKER_OPTS
+
+docker run --name compose-test -d -p 8000:8000 -e COMPOSE_SCRIPT="$(cat docker-compose.yml)" bensdoings/dind-compose-dynamic
+
+# To see the output of docker-compose
+
+docker logs compose-test
+
+# Once the application has fully initialized, test for Wordpress home page on endpoing VM at port 8000
+
+wget 10.118.69.163:8000
+```
+
+2. Static
+
+The static method involves baking the Compose file into a Dockerfile and the image data can also be cached inside the containerVM Docker images for faster startup or if behind a firewall. This is a true sealed appliance in that it can only ever bootstrap as one thing.
+
+TBD
