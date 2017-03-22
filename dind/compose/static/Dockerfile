@@ -6,6 +6,8 @@
 
 # This is functonally equivalent to a sealed appliance. There is no sshd and no remote Docker socket.
 
+# TODO: Have docker-compose down run on Docker stop
+
 # See README for more usage
 
 FROM bensdoings/dind-photon:1.12.6
