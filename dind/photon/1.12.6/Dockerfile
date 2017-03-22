@@ -15,7 +15,7 @@
 
 FROM vmware/photon
 
-RUN tdnf install -y iptables net-tools docker 1.12.6-1.ph1
+RUN tdnf install -y procps-ng iptables net-tools docker 1.12.6-1.ph1
 
 EXPOSE 2376
 
