@@ -173,9 +173,11 @@ docker rm dind-test
 
 **Creating a Sealed Appliance with Docker Compose**
 
-The whole purpose of Docker Compose is to download one or more images and then spin up containers, volumes, networking etc. The idea is that you should be able to create an application from a number of containerized services which are tightly-coupled in some way. VIC itself is supporting the Compose capabilities to allow you to spin up multiple containerVMs with vSphere networking, storage etc.
+The whole purpose of Docker Compose is to download one or more images and then spin up containers, volumes, networking etc. The idea is that you should be able to create an application from a number of containerized services which are tightly-coupled in some way. 
 
-As such, when you combine native Docker Compose with the VIC nested Docker model, you can create a sealed appliance with no SSH access, no remote Docker API and just have it bootstrap from the Compose file after booting. 
+(VIC itself is supporting the Compose capabilities to allow you to spin up multiple containerVMs with vSphere networking, storage etc. The distinction is that in that case, you end up with a VM per container. In this case, you end up with a single VM with multiple containers)
+
+So, when you combine native Docker Compose with the VIC nested Docker model, you can create a sealed appliance with no SSH access, no remote Docker API and just have it bootstrap from the Compose file after booting. 
 
 There are two ways this can be achieved, the dynamic way and the static way. 
 
