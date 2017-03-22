@@ -50,7 +50,7 @@ Example:
 ```
 # Start by talking to the VIC endpoint - note we name the container in this example and use the name in inspect
 export DOCKER_HOST=<vic-endpoint-ip:port>
-docker run -d --name=dind-test --net=ExternalNetwork 10.118.69.100/test/debian-dind:1.13.1
+docker run -d --name=dind-test --net=ExternalNetwork bensdoings/dind-debian:1.13.1
 docker inspect dind-test | grep IPAddress
 
 # Now you can talk to the nested Docker endpoint
@@ -73,7 +73,7 @@ Add ``-m <mem> and --cpuset-cpus <vcpus>`` on the docker command-line to set res
 Example:
 
 ```
-docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork 10.118.69.100/test/photon-dind:1.12
+docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork bensdoings/dind-photon:1.12.6
 ```
 
 **Alternative to using docker -H**
@@ -87,7 +87,7 @@ Note that in the Dockerfiles, ``$DOCKER_OPTS`` is added as an environment variab
 Example:
 
 ```
-docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork 10.118.69.100/test/photon-dind:1.12
+docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork bensdoings/dind-photon:1.12.6
 docker -H 10.118.69.85:2376 pull 10.118.69.100/test/foobedoo
 ```
 
@@ -213,6 +213,24 @@ Congratulations! With a single line, you've created a VM that's running a fully 
 
 2. Static
 
-The static method involves baking the Compose file into a Dockerfile and the image data can also be cached inside the containerVM Docker images for faster startup or if behind a firewall. This is a true sealed appliance in that it can only ever bootstrap as one thing.
+The static method involves baking the Compose file into a Dockerfile. This is a true sealed appliance in that it can only ever bootstrap as one thing. 
 
-TBD
+It would be a useful optimization to also be able to bake the image data into the top-level images by running docker-compose pull in the build script. This would also be more secure as there's a guarantee that the appliance always initializes the same binaries. The difficulty with this is running Docker in Docker in the build process. This is currently a TODO.
+
+As an example, let's run the same Docker Wordpress demo:
+
+```
+# Start by creating a docker-compose.yml locally. See https://docs.docker.com/compose/wordpress/#define-the-project
+
+# Create a Dockerfile that inherits from the one in /compose/static and that copies the docker-compose.yml into the root. 
+#    See /compose/static/wordpress as an example
+
+# Build and push the Dockerfile with regular Docker
+
+docker build -t bensdoings/dind-compose-wordpress .
+docker push bensdoings/dind-compose-wordpress
+
+# Run the appliance in VIC
+
+docker run -d -p 8000:8000 bensdoings/dind-compose-wordpress
+```
