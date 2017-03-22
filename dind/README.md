@@ -181,7 +181,7 @@ There are two ways this can be achieved, the dynamic way and the static way.
 
 1. Dynamic
 
-The dynamic method involves passing the Compose file to the containerVM as part of the ``docker create`` or ``docker run`` commands. The dynamic method always requires subsequent pulling of the requisite images before the application can start, unless a persistent volume is used for the image cache (see above).
+The dynamic method involves passing the Compose file to the containerVM as part of the ``docker create`` or ``docker run`` commands. The dynamic method implies subsequent pulling of the requisite images before the application can start, unless a persistent volume is used for the image cache (see above).
 
 An example Dockerfile demonstrating the dynamic method is in ``/compose/dynamic``. It adds docker-compose binaries to the existing Photon dind image. The command serializes the yml to a file, starts the Docker engine, waits for it to start and then runs ``docker-compose up``. The lifespan of the containerVM is tied to the lifespan of the docker-compose process.
 
@@ -205,6 +205,9 @@ docker logs compose-test
 
 wget 10.118.69.163:8000
 ```
+Congratulations! With a single line, you've created a VM that's running a fully functional Wordpress with a nested mysql database. 
+
+(In reality, if you were running this in production, there's a strong case for running the Wordpress instance and database in separate VMs - not least for runtime isolation. If so, you can target VIC directly with docker-compose).
 
 2. Static
 
