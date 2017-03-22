@@ -1,8 +1,12 @@
 # Purpose of this Dockerfile is to create a VIC image that will run "docker-compose up" in a new nested Docker host
-# The yml file is passed in dynamically when the containerVM is run, using -e COMPOSE_SCRIPT="$(cat docker-compose.yml)"
-# This is functonally equivalent to a sealed appliance. There is no sshd and no remote Docker socket. 
+# The yml file should be built into a child image of the following form:
 
-# See README for usage
+# FROM bensdoings/dind-compose-static
+# COPY docker-compose.yml /
+
+# This is functonally equivalent to a sealed appliance. There is no sshd and no remote Docker socket.
+
+# See README for more usage
 
 FROM bensdoings/dind-photon:1.12.6
 
