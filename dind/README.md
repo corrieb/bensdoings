@@ -4,6 +4,8 @@ This does not come with the same caveats as running Docker in *actual* Docker. T
 
 These Dockerfiles are very easy to extend to add your own functionality. 
 
+(Note that only the Photon versions are the only ones that work on VIC 0.9.0 due to https://github.com/vmware/vic/issues/3858)
+
 **Usage**
 
 You can use these images if you want a simple way to spin up Docker hosts on vSphere using VIC. They're useful for building other Docker images, general development, run tests, play with Swarm etc.

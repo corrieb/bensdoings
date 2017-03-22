@@ -1,3 +1,5 @@
+# Note that this doens't work on VIC 0.9.0 due to https://github.com/vmware/vic/issues/3858
+
 FROM bensdoings/dind-debian:1.13.1
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
