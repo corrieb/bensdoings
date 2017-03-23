@@ -1,4 +1,4 @@
-The purpose of these Dockerfiles is to create VIC images that run nested Docker that can be accessed remotely. The net result of running one of these images in VIC is a fully-functional Docker daemon running in a VM with its own image cache, bridge network etc. 
+The purpose of these Dockerfiles is to create VIC images that run nested Docker that can be accessed in various ways. The net result of running one of these images in VIC is a fully-functional Docker daemon running in a VM with its own image cache, bridge network etc. 
 
 This does not come with the same caveats as running Docker in *actual* Docker. The Docker engine in these VMs is as fully functional as any other. The beauty of this is that we can treat a Docker host as ephemerally as a container.
 
