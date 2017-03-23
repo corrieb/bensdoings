@@ -10,6 +10,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
     && su vmware && mkdir ~/.ssh && chmod 700 ~/.ssh \
     && echo "vmware   ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-EXPOSE 2376 22
+EXPOSE 22
 
 CMD /usr/sbin/sshd && /usr/bin/dockerd -s overlay2 $DOCKER_OPTS
