@@ -45,7 +45,7 @@ VIC allows us to achieve all the optimizations we're looking for because we can 
 *Let's start by creating a data volume for the source tree and build output*
 
 ```
-> docker volume create --name vic-build2 --opt capacity=2g
+> docker volume create --name vic-build --opt capacity=2g
 > docker volume ls
 DRIVER              VOLUME NAME
 vsphere             vic-build
@@ -57,7 +57,12 @@ I'm choosing to use the golang image because it has a git client in it and we'll
 
 ```
 docker run --name temp -v vic-build:/build -w /build golang:1.8 git clone https://github.com/vmware/vic.git
-docker rm temp
+
+# If you want to check out a particular PR into this tree, run:
+docker run --name temp2 -v vic-build:/build -w /build/vic golang:1.8 /bin/bash -c "git fetch origin pull/<ID>/head:my-branch;git checkout my-branch"
+
+# Clean up
+docker rm temp temp2
 ```
 
 *Now lets run a build*
@@ -71,7 +76,20 @@ docker run --name vic-build -m 4g -v vic-build:/go/src/github.com/vmware/ -w /go
 
 There's a few things we might want to do at this point:
 
-- Install the build to test it, assuing it built correctly
+- Install the build to test it, assuming it built correctly
+
+We can now run vic-machine directly out of the volume we built:
+
+```
+docker run -v vic-build:/build golang:1.8 /build/vic/bin/vic-machine-linux --help
+
+# To pass multiple arguments to vic-machine create, simply add them to the command-line
+# A quick and dirty example: 
+
+docker run -v vic-build:/build golang:1.8 /build/vic/bin/vic-machine-linux create --no-tls --insecure-registry=10.118.69.100 --thumbprint=<thumbprint> --name=test --target=10.118.69.238 --user=Administrator@vsphere.local --image-store=iSCSI-nas-2 --password=<password> --bridge-network=test-bridge --public-network=ExternalNetwork --compute-resource=MyCL --timeout 60s --volume-store=iSCSI-nas-2/test:default --container-network=ExternalNetwork
+
+```
+
 
 - Make a change and rebuild, if it didn't build correctly
 
