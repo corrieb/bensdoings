@@ -8,7 +8,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
     && mkdir /var/run/sshd && chmod 700 /var/run/sshd \
     && useradd -s /bin/bash -m -p $(openssl passwd -1 vmware) vmware \
     && su vmware && mkdir ~/.ssh && chmod 700 ~/.ssh \
-    && echo "vmware   ALL=(ALL:ALL) ALL" >> /etc/sudoers
+    && echo "vmware   ALL=(ALL:ALL) ALL" >> /etc/sudoers \
+    && sed -i -- 's/without-password/yes/g' /etc/ssh/sshd_config
 
 EXPOSE 22
 
