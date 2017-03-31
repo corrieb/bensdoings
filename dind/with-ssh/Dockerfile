@@ -11,13 +11,14 @@ RUN yum install -y \
     sudo \
     vim \
     net-tools \
+    openssl \
     && mkdir /var/run/sshd && chmod 700 /var/run/sshd \
 # Comment out next 3 lines if you do not want to bake in a particular non-root user/pwd combo
     && useradd -s /bin/bash -m -p $(openssl passwd -1 vmware) vmware \
     && su vmware && mkdir ~/.ssh && chmod 700 ~/.ssh \
     && echo "vmware   ALL=(ALL:ALL) ALL" >> /etc/sudoers \
 # Comment out if you don't want to grant root ssh access
-    && sed -i -- 's/without-password/yes/g' /etc/ssh/sshd_config
+    && sed -i -- 's/#PermitRootLogin/PermitRootLogin/g' /etc/ssh/sshd_config
 
 EXPOSE 22
 
