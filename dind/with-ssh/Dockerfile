@@ -13,6 +13,7 @@ RUN yum install -y \
     net-tools \
     openssl \
     && mkdir /var/run/sshd && chmod 700 /var/run/sshd \
+    && /usr/bin/ssh-keygen -A \
 # Comment out next 3 lines if you do not want to bake in a particular non-root user/pwd combo
     && useradd -s /bin/bash -m -p $(openssl passwd -1 vmware) vmware \
     && su vmware && mkdir ~/.ssh && chmod 700 ~/.ssh \
