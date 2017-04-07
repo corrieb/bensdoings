@@ -16,7 +16,6 @@ RUN tdnf install --refresh -y docker 1.12.6-1.ph1
 #    && curl -L'#' https://get.docker.com/builds/Linux/x86_64/docker-17.03.1-ce.tgz | tar --strip-components=1 -C /usr/bin -xzf -
 
 RUN sed -i 's/PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN echo 'root:Admin!23' | chpasswd
 
 EXPOSE 2376
 
