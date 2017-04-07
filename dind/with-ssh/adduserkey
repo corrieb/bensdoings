@@ -1,0 +1,24 @@
+#!/bin/bash
+
+homedir=/home/$1
+if id "$1" >/dev/null 2>&1; then
+	if [ "$1" == "root" ]; then
+		echo "adding root key"
+		homedir=/root
+	else 
+		echo "user $1 exists - appending key"
+	fi
+else
+	echo "creating user $1 and adding key"
+	useradd -m $1
+fi
+
+sshdir=$homedir/.ssh
+authkeysfile=$sshdir/authorized_keys
+
+mkdir -p $sshdir
+chmod 700 $sshdir
+echo $2 >> $authkeysfile
+chmod 600 $authkeysfile
+chown -R $1 $sshdir
+

@@ -1,0 +1,3 @@
+FROM scratch
+
+CMD /usr/bin/dockerd -s overlay2 $DOCKER_OPTS

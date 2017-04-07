@@ -3,8 +3,14 @@
 FROM bensdoings/dind-centos-local:17.03.1-ce
 
 # Adds vim and net-tools (for ifconfig) - once you have a shell, you often want these
-# You can set the root passwd after deployment to "foobar" using docker exec
-#   Eg. docker exec -d myContainer /usr/sbin/usermod --password $(echo foobar | openssl passwd -1 -stdin) root
+# After deployment, you can use docker exec to configure and start sshd.
+# 
+# - Add a user and/or public key. Script will create the user if it doesn't exist
+# docker exec -d myContainer /usr/bin/adduserkey derek "$(cat /home/derek/.ssh/id_rsa.pub)"
+# - Set a password
+# docker exec -d myContainer /usr/sbin/usermod --password $(echo foobar | openssl passwd -1 -stdin) root
+ 
+COPY adduserkey /usr/bin
 
 RUN yum install -y \
     openssh-server \
@@ -12,8 +18,9 @@ RUN yum install -y \
     vim \
     net-tools \
     openssl \
+    openssh-clients \
     && mkdir /var/run/sshd && chmod 700 /var/run/sshd \
-    && /usr/bin/ssh-keygen -A \
+    && chown root:root /usr/bin/adduserkey \
 # Comment out next 3 lines if you do not want to bake in a particular non-root user/pwd combo
     && useradd -s /bin/bash -m -p $(openssl passwd -1 vmware) vmware \
     && su vmware && mkdir ~/.ssh && chmod 700 ~/.ssh \
@@ -23,4 +30,4 @@ RUN yum install -y \
 
 EXPOSE 22
 
-CMD /usr/sbin/sshd && /usr/bin/dockerd -s overlay2 $DOCKER_OPTS
+CMD /usr/bin/ssh-keygen -A && /usr/sbin/sshd && /usr/bin/dockerd -s overlay2 $DOCKER_OPTS
