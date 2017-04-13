@@ -2,7 +2,7 @@ The purpose of this hack is to vastly simplify the operation of the vic-machine 
 
 vic-machine today takes a large number of arguments and each command takes a different subset of arguments. As such, your instinct will be to script it, but you'll quickly find that you end up with a massive proliferation of scripts, particularly if you have multiple VCHs.
 
-This hack proposes a simple JSON manifest for a VCH setup. It contains, VC connection information, VCH configuration etc. organized in a hierarchical way that makes the overall configuration much easier to parse by eye and modify. This JSON manifest is then used as input to all vic-machine commands, which are themselves invoked using docker. All of this can then be invoked from a super simple single script.
+This hack proposes a simple JSON manifest for a VCH setup. It contains, VC connection information, VCH configuration etc. organized in a hierarchical way that makes the overall configuration much easier to parse by eye and modify. This JSON manifest is then used as input to all vic-machine commands, which are themselves invoked using docker. All of this can then be invoked from a single script.
 
 Here's how to get started:
 
