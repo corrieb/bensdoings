@@ -17,7 +17,7 @@ Now copy ./vic-machine.sh into the root of your local folder. You should now see
 vic-machine.sh
 MyVCH/config.json
 ```
-Now simply run ``> ./vic-machine.sh latest MyVCH create``
+Now simply run ``./vic-machine.sh latest MyVCH create``
 
 **Modifying**
 
