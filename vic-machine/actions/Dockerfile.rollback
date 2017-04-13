@@ -1,0 +1,7 @@
+FROM vic-machine-base:latest
+
+COPY parse.sh map-upgrade.json /
+
+WORKDIR /config
+
+CMD /vic/vic-machine-linux upgrade --rollback $(/parse.sh /config/config.json /map-upgrade.json)

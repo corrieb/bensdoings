@@ -1,0 +1,7 @@
+FROM vic-machine-base:latest
+
+COPY parse.sh map-delete.json /
+
+WORKDIR /config
+
+CMD /vic/vic-machine-linux delete $(/parse.sh /config/config.json /map-delete.json)

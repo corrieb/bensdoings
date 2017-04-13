@@ -10,13 +10,15 @@ COPY adduserkey /usr/bin
 RUN tdnf install --refresh -y procps-ng iptables net-tools openssh 
 
 # Install supported version
-RUN tdnf install --refresh -y docker 1.12.6-1.ph1
+#RUN tdnf install --refresh -y docker 1.12.6-1.ph1
 # Install unsupported version
-# RUN tdnf install --refresh -y tar gzip sed \
-#    && curl -L'#' https://get.docker.com/builds/Linux/x86_64/docker-17.03.1-ce.tgz | tar --strip-components=1 -C /usr/bin -xzf -
+RUN tdnf install --refresh -y tar gzip sed \
+   && /usr/bin/ssh-keygen -A \
+   && curl -L'#' https://get.docker.com/builds/Linux/x86_64/docker-17.03.1-ce.tgz | tar --strip-components=1 -C /usr/bin -xzf -
 
 RUN sed -i 's/PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN echo 'root:Admin!23' | chpasswd
 
 EXPOSE 2376
 
-CMD /usr/bin/ssh-keygen -A && /usr/sbin/sshd && /usr/bin/dockerd -s overlay2 $DOCKER_OPTS
+CMD rm /var/run/docker.pid;/usr/sbin/sshd;/usr/bin/dockerd -s overlay2 $DOCKER_OPTS;sleep 10000

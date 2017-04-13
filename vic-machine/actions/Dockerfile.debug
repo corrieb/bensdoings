@@ -1,0 +1,7 @@
+FROM vic-machine-base:latest
+
+COPY parse.sh map-debug.json /
+
+WORKDIR /config
+
+CMD /vic/vic-machine-linux debug $(/parse.sh /config/config.json /map-debug.json)

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exec in 1.1 does not inherit environment
+export PATH=$PATH:/usr/sbin
+
 homedir=/home/$1
 if id "$1" >/dev/null 2>&1; then
 	if [ "$1" == "root" ]; then

@@ -1,0 +1,7 @@
+{
+	"--target": ".vcenter.address_datacenter",
+        "--user": ".vcenter.credentials.admin_user",
+        "--password": ".vcenter.credentials.admin_password",
+        "--thumbprint": ".vcenter.credentials.thumbprint",
+        "--timeout": ".vic_machine.timeout"
+}
