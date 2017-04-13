@@ -8,7 +8,7 @@ Here's how to get started:
 
 **Usage**
 
-Use the example.json in the repository as a starting point, edit it and place it in a subdirectory with a memorable name. Name it config.json. Note you can find the correct thumprint by running create without a thumbprint.
+Use the example.json in the repository as a starting point, edit it and place it in a subdirectory with a memorable name. Name it config.json. (Note you can find the correct thumprint by running ``create`` without a thumbprint)
 
 Now copy ./vic-machine.sh into the root of your local folder. You should now see:
 
