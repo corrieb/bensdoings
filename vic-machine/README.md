@@ -17,7 +17,10 @@ Now copy ./vic-machine.sh into the root of your local folder. You should now see
 vic-machine.sh
 MyVCH/config.json
 ```
-Now simply run ``./vic-machine.sh latest MyVCH create``
+Now simply run ``./vic-machine.sh`` to see how to use it. 
+To create a VCH with the latest version of VIC, you simply run ``./vic-machine.sh latest MyVCH create``
+
+Note that any generated certificates will be placed in the subdirectory you selected under another subdirectory of the same name
 
 **Modifying**
 
