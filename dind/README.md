@@ -34,7 +34,7 @@ docker pull bensdoings/dind-photon
 docker pull bensdoings/dind-debian
 docker pull bensdoings/dind-centos
 ```
-_Note that the Photon image is the smallest and is the only OS image that perfectly matches the VIC Linux kernel. If you ever need to build kernel libraries, you'll find Photon the easiest image to work with. Photon is included because it's supported by VMware and CentOS is included because it is supported by Docker._
+_Note that the Photon image is the smallest and is the only OS image that perfectly matches the VIC Linux kernel. If you ever need to build kernel modules, you'll find Photon the easiest image to work with. Photon is included because it's supported by VMware and CentOS is included because it is supported by Docker._
 
 **Run with Public IP**
 
