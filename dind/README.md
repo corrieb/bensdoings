@@ -124,14 +124,14 @@ Example:
 
 ```
 docker volume create --name images
-docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoings/dind-debian:1.13.1
+docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoings/dind-debian
 docker -H 10.118.69.50:10001 pull busybox
 # Note Docker will pull busybox to the empty volume
 
 docker kill dind-test
 docker rm dind-test
 
-docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoings/dind-debian:1.13.1
+docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoings/dind-debian
 docker -H 10.118.69.50:10001 pull busybox
 # Note busybox image is already there
 ```
