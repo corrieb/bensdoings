@@ -137,7 +137,7 @@ docker -H 10.118.69.50:10001 pull busybox
 ```
 **Stopping and Starting the host**
 
-The Dockerfiles are designed such that they will shut down cleanly if you use ``docker stop`` to stop them. If you use ``docker kill``, you may find that the image cache becomes corrupted. You can stop and start the nested host as many times as you like. Stopping it frees up resources on the host system, but preserves state even if you don't have a volume mounted.
+The Dockerfiles are designed such that they will shut dockerd down cleanly if you use ``docker stop`` to stop them. The Docker Compose images will run ``docker-compose down`` when stopped. If you use ``docker kill``, you may find that the image cache becomes corrupted. You can stop and start the nested host as many times as you like. Stopping it frees up resources on the host system, but preserves state even if you don't have a volume mounted.
 
 **Docker Build Scenarios**
 
