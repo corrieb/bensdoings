@@ -23,16 +23,18 @@ Example:
 ```
 # Using a local Docker installation
 
-docker build -t 10.118.69.100/test/debian-dind:1.13.1 .
-docker push 10.118.69.100/test/debian-dind:1.13.1
+docker build -t 10.118.69.100/test/dind-debian:1.13.1 .
+docker push 10.118.69.100/test/dind-debian:1.13.1
 ```
 
 Or if you simply want to use the versions I built:
 
 ```
-docker pull bensdoings/dind-photon:1.12.6
-docker pull bensdoings/dind-debian:1.13.1
+docker pull bensdoings/dind-photon
+docker pull bensdoings/dind-debian
+docker pull bensdoings/dind-centos
 ```
+Note that the Photon image is the smallest and is the only OS image that perfectly matches the VIC Linux kernel. If you ever need to build kernel libraries, you'll find Photon the easiest image to work with. Photon is included because it's supported by VMware and CentOS is included because it is supported by Docker.
 
 **Run with Public IP**
 
@@ -50,7 +52,7 @@ Example:
 ```
 # Start by talking to the VIC endpoint - note we name the container in this example and use the name in inspect
 export DOCKER_HOST=<vic-endpoint-ip:port>
-docker run -d --name=dind-test --net=ExternalNetwork bensdoings/dind-debian:1.13.1
+docker run -d --name=dind-test --net=ExternalNetwork bensdoings/dind-debian
 docker inspect dind-test | grep IPAddress
 
 # Now you can talk to the nested Docker endpoint
@@ -73,7 +75,7 @@ Add ``-m <mem> and --cpuset-cpus <vcpus>`` on the docker command-line to set res
 Example:
 
 ```
-docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork bensdoings/dind-photon:1.12.6
+docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork bensdoings/dind-photon
 ```
 
 **Alternative to using docker -H**
@@ -87,25 +89,29 @@ Note that in the Dockerfiles, ``$DOCKER_OPTS`` is added as an environment variab
 Example:
 
 ```
-docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork bensdoings/dind-photon:1.12.6
+docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork bensdoings/dind-photon
 docker -H 10.118.69.85:2376 pull 10.118.69.100/test/foobedoo
 ```
+**Running dockerd locally (not exposed remotely)**
+
+With any of these images, you can run docker locally inside the VM, simply by setting ``-e LOCAL=true`` when you start the container. This is useful when clustering nodes together or if you want to hide the control plane.
 
 **Run Docker locally with SSH server**
 
-If you'd prefer to login to a new Docker host and run Docker locally, there's an example Dockerfile in ``/with-ssh/``. 
+If you'd prefer to login to a new Docker host and run Docker locally, there's example Dockerfiles in ``/with-ssh/``. 
 
 Using sshd is more convenient than starting the container with a shell using ``docker run -it`` because if you exit such a container, it will shut down. You would also have to remember to start the docker daemon manually each time.
 
-This example image is set up with a default user and password of vmware/vmware - so obviously you may want to consider changing that
+The example images create unique server keys when started and require you to add a public key using ``docker exec`` after they start.
 
-Example:
+This example creates a Derek user and copies over an appropriate public key:
 
 ```
-docker run -d --name=dind-test-ssh --net=ExternalNetwork bensdoings/dind-debian-ssh:1.13.1
+docker run -d --name=dind-test-ssh --net=ExternalNetwork bensdoings/dind-debian-ssh
 docker inspect dind-test-ssh | grep IPAddress
-ssh vmware@10.118.69.47
-vmware@8540f8071200:~$ sudo docker run busybox date
+docker exec -d dind-test-ssh /usr/bin/adduserkey derek "$(cat /home/derek/.ssh/id_rsa.pub)"
+ssh derek@10.118.67.210
+$ sudo docker run busybox date
 ```
 
 **Persist local state between invocations**
@@ -129,6 +135,9 @@ docker run -d -v images:/var/lib/docker --name=dind-test -p 10001:2376 bensdoing
 docker -H 10.118.69.50:10001 pull busybox
 # Note busybox image is already there
 ```
+**Stopping and Starting the host**
+
+The Dockerfiles are designed such that they will shut down cleanly if you use ``docker stop`` to stop them. If you use ``docker kill``, you may find that the image cache becomes corrupted. You can stop and start the nested host as many times as you like. Stopping it frees up resources on the host system, but preserves state even if you don't have a volume mounted.
 
 **Docker Build Scenarios**
 
@@ -141,7 +150,7 @@ Simply running the nested Docker host in dameon mode and setting DOCKER_HOST to 
 As an example, let's build a trivial Dockerfile using a nested Docker host, push it to DockerHub and then run it in VIC.
 
 ```
-docker run -d -p 10001:2376 --name dind-test bensdoings/dind-debian:1.13.1
+docker run -d -p 10001:2376 --name dind-test bensdoings/dind-debian
 echo -e "FROM busybox\n\nCMD echo \"Hello Ben\"" > Dockerfile
 
 # Set the Docker client to point at the new nested host
@@ -213,7 +222,7 @@ Congratulations! With a single line, you've created a VM that's running a fully 
 
 2. Static
 
-The static method involves baking the Compose file into a Dockerfile. This is a true sealed appliance in that it can only ever bootstrap as one thing. 
+The static method involves baking the Compose file into a Dockerfile. This is closer to a sealed appliance in that it can only ever bootstrap as one thing. It does still have to download the images though.
 
 It would be a useful optimization to also be able to bake the image data into the top-level images by running docker-compose pull in the build script. This would also be more secure as there's a guarantee that the appliance always initializes the same binaries. The difficulty with this is running Docker in Docker in the build process. This is currently a TODO.
 
