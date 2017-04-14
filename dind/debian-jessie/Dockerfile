@@ -6,7 +6,7 @@
 # See README for usage
 
 FROM debian:jessie
- 
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
     curl \
@@ -24,4 +24,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
 
 EXPOSE 2376
 
-CMD /usr/bin/dockerd -H tcp://0.0.0.0:2376 -s overlay2 $DOCKER_OPTS
+CMD [ "/etc/rc.local" ]
+
+COPY rc.local /etc/

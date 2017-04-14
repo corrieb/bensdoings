@@ -1,0 +1,35 @@
+#!/bin/bash
+
+term_with_pidfile()
+{
+   [ -e $1 ] && kill $(cat $1)
+}
+
+cleanup() 
+{
+   echo "sending term signal to dockerd"
+   term_with_pidfile "/var/run/docker.pid"
+
+   echo "stopping sshd"
+   [ -n "$(pidof sshd)" ] && kill "$(pidof sshd)"
+}
+
+trap cleanup EXIT
+
+# Possible that container was previously killed
+[ -f /var/run/docker.pid ] && rm /var/run/docker.pid
+
+if [ -z "$(pidof sshd)" ]; then 
+   if [ ! -f /tmp/keygen_done ]; then
+      echo "genreating unique server keys"
+      ssh-keygen -A
+      touch /tmp/keygen_done
+   fi
+   echo "starting sshd"
+   /usr/sbin/sshd -E /var/log/sshd.log
+fi
+
+# To tell docker not to expose its API remotely, set -e LOCAL=true"
+[ -z ${LOCAL+x} ] && REMOTE="-H tcp://0.0.0.0:2376"
+/usr/bin/dockerd $REMOTE -s overlay2 $DOCKER_OPTS
+

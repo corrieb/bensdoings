@@ -1,5 +1,0 @@
-FROM scratch
-
-EXPOSE 22
-
-CMD /usr/bin/ssh-keygen -A && /usr/sbin/sshd && /usr/bin/dockerd -s overlay2 $DOCKER_OPTS

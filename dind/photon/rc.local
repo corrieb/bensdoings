@@ -1,0 +1,21 @@
+#!/bin/bash
+
+term_with_pidfile()
+{
+   [ -e $1 ] && kill $(cat $1)
+}
+
+cleanup() 
+{
+   echo "sending term signal to dockerd"
+   term_with_pidfile "/var/run/docker.pid"
+}
+
+trap cleanup EXIT
+
+# Possible that container was previously killed
+[ -f /var/run/docker.pid ] && rm /var/run/docker.pid
+
+# To tell docker not to expose its API remotely, set -e LOCAL=true"
+[ -z ${LOCAL+x} ] && REMOTE="-H tcp://0.0.0.0:2376"
+/usr/bin/dockerd $REMOTE -s overlay2 $DOCKER_OPTS

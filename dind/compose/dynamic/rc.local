@@ -1,0 +1,31 @@
+#!/bin/bash
+
+term_with_pidfile()
+{
+   [ -e $1 ] && kill $(cat $1)
+}
+
+cleanup() 
+{
+   echo "stopping containers"
+   docker-compose down
+   echo "sending term signal to dockerd"
+   term_with_pidfile "/var/run/docker.pid"
+}
+
+trap cleanup EXIT
+
+# Possible that container was previously killed
+[ -f /var/run/docker.pid ] && rm /var/run/docker.pid
+
+# Write the compose script
+[ ! -z ${COMPOSE_SCRIPT+x} ] && echo "$COMPOSE_SCRIPT" > docker-compose.yml
+
+# Run docker daemon in the background
+nohup /usr/bin/dockerd -s overlay2 $DOCKER_OPTS > /tmp/docker.out 2>&1 &
+
+# Wait for daemon start
+while [ ! -S /var/run/docker.sock ]; do sleep 2; done
+
+# Run compose up
+docker-compose up
