@@ -10,7 +10,7 @@ FROM centos:7.3.1611
 RUN yum install -y yum-utils \
     && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \
     && yum makecache fast \
-    && yum install -y docker-ce
+    && yum install -y docker-ce sysvinit-tools
 
 EXPOSE 2376
 
