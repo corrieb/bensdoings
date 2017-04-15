@@ -1,0 +1,62 @@
+This is an very early alpha version of some scripts that allow you to provision and manage a Docker Datacenter cluster into a pre-existing Virtual Container Host.
+
+It builds on many of the other work in this repository, in particular the dind images and vic-machine provisioning.
+
+It expects that you install a Virtual Container Host with certificate authentication and it then uses the VIC control plane to set up and install a Docker Datacenter cluster, based on the parameters you define in some JSON config. 
+
+It is set up such that /var/lib/docker on each node is written to a VIC volume which can be sized in the config. The cluster is also configured so that there is a master node with SSH access which you can log into using a generated key. The other nodes are completely sealed in that sshd is not installed and the Docker API configured to the local socket.
+
+It is currently only configurable so that the nodes get identities on a vSphere network defined as a --container-network, which is specified in the JSON config.
+
+Here is a from-scratch example using images pushed to my bensdoings Docker Hub:
+
+**Install a VCH**
+
+My starting point here is as follows. I have a config file for the DDC cluster (see ddc/example.json) and a config file for the VCH (see vic-machine/example.json). I also have regular docker installed to a local Linux VM.,
+
+```
+> ls -l
+./swarm test/config.json
+./swarm test/vch1/config.json
+```
+
+To show exactly what's going on, I'm going to dispense with any scripts which hide the details.
+
+First off, let's install the VCH using docker:
+
+```
+> docker run -v /swarm-test/vch1:/config bensdoings/vic-machine-create
+```
+This will install a VCH to the vSphere cluster I've specified in ``/vch1/config.json``. Note that I've configured it to use certificate authentication, which is a requirement of this demo. Simply make sure ``tls-cname`` is configured in the JSON.
+
+Once the VCH has installed, I'm going to test it by following the output from vic-machine. Note that the install script has created a subdirectory with the same name as the VCH name in which it's placed the cerificates for accessing the Docker endpoint.
+
+```
+> DOCKER_TLS_VERIFY=1 DOCKER_CERT_PATH=./vch1/dev-cert/ DOCKER_HOST=office2-sfo2-dhcp237.eng.vmware.com:2376 docker info
+```
+That's all we need to do. We have a fully functioning and secured VCH!
+
+**Install DDC**
+
+In order to install DDC, we need to pass in 3 key pieces of information:
+
+1) The certificates vic-machine created, so that the install script can access the control plane. This is passed in as a local volume and should map to /certs. Note that the install will create an additional .ssh folder in here with the ssh keys to the master node.
+2) The config.json file for the DDC cluster. This is passed in as a local volume and should map to /config.
+3) The IP Address and port of the VCH Docker endpoint. This is passed in as a DOCKER_HOST environment variable.
+
+For more information on the JSON format, please see the separate README. 
+
+As with the VCH install, we use docker to install DDC. Make sure to clear any DOCKER_HOST env vars if you set them earlier. You're using the local Docker, not the VCH endpoint.
+
+```
+> docker run -v /swarm-test:/config -v /swarm-test/vch1/dev-cert:/certs -e DOCKER_HOST=office2-sfo2-dhcp237.eng.vmware.com:2376 bensdoings/ddc-create-cluster
+```
+So while we wait for this to complete, what is it doing? Well, first off, it's pulling the Docker image that handles the installation. This image parses the JSON config and drives the VCH endpoint using a docker client to set everything up. This script logs docker operations to ``/swarm-test/logs`` so that you can look and see for any errors.
+
+Once the script is running, it starts by getting the VCH endpoint to pull down the Docker images that are the bases for the DDC nodes. In this example, I use my dind images with Centos7 and Docker Enterprise Edition. The master node also has sshd installed.
+
+Once the images are pulled down, volume disks are created for the /var/lib/docker folder of each node. These are a size as specified in the JSON file. Then each node is started using a docker command.
+
+The master node is special. Once it starts up, SSH keys are generated and copied into it. The install script then runs the UCP install script inside of the master node in parallel with the creation of the rest of the cluster.
+
+Once UCP is up on the master, all the other nodes are added to the swarm and post-configured with the vSphere Volume Driver.
