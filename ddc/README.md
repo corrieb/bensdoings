@@ -20,8 +20,6 @@ My starting point here is as follows. I have a config file for the DDC cluster (
 ./swarm test/vch1/config.json
 ```
 
-To show exactly what's going on, I'm going to dispense with any scripts which hide the details.
-
 First off, let's install the VCH using docker:
 
 ```
