@@ -6,10 +6,13 @@ if [ -z ${DOCKER_HOST+x} ]; then
   exit 1
 fi
 
-CONFIG_FILE="/config/config.json"
+CONFIG_DIR="/config"
+CONFIG_FILE="$CONFIG_DIR/config.json"
 CERT_PATH="/certs"
 MASTER_NAME="manager1"
 NODE_CREATE_RETRY="3"
+LOG_DIR="$CONFIG_DIR/logs"
+mkdir -p $LOG_DIR
 
 SSH_CERT_PATH="$CERT_PATH/.ssh"
 export DOCKER_TLS_VERIFY=1
@@ -38,11 +41,6 @@ UCP_VERSION="$(jq -r ".ucp.version" $CONFIG_FILE)"
 create_node()
 {
    echo "Creating node $2..."
-   docker volume inspect $1 > /dev/null 2>&1
-   if [ $? -eq 0 ]; then
-      echo "Deleting stale image cache $1"
-      docker volume rm $1
-   fi
    docker volume create --name=$1 --opt Capacity="$SWARM_NODE_IMAGE_CACHE"
    local n=0
    until [ $n -ge $NODE_CREATE_RETRY ]
@@ -101,7 +99,7 @@ create_manager()
 {
    create_node "m1-vol" "$MASTER_NAME" "$MASTER_IMAGE" "$MASTER_DOCKER_OPTS"
 
-   if [ -z "$SSH_CERT_PATH/id_rsa" ]; then
+   if [ ! -f "$SSH_CERT_PATH/id_rsa" ]; then
       echo "Generating new SSH keys for root user into $SSH_CERT_PATH"
       mkdir -p $SSH_CERT_PATH
       ssh-keygen -b 2048 -t rsa -f "$SSH_CERT_PATH/id_rsa" -q -N "" > /dev/null 2>&1
@@ -115,7 +113,7 @@ create_manager()
    MANAGER1_IP=$(docker inspect --format "{{ .NetworkSettings.Networks.$NODE_NETWORK.IPAddress }}" manager1)
    echo "Installing UCP $UCP_VERSION to $MANAGER1_IP"
    ssh-keyscan $MANAGER1_IP >> "$SSH_CERT_PATH/known_hosts"
-   ssh -i "$SSH_CERT_PATH/id_rsa" -o "UserKnownHostsFile=$SSH_CERT_PATH/known_hosts" $MANAGER1_IP docker run --rm --name ucp -v /var/run/docker.sock:/var/run/docker.sock docker/ucp:$UCP_VERSION install --host-address $MANAGER1_IP --admin-username $SWARM_ADMIN --admin-password $SWARM_ADMIN_PWD > /tmp/install_output 2>&1
+   ssh -i "$SSH_CERT_PATH/id_rsa" -o "UserKnownHostsFile=$SSH_CERT_PATH/known_hosts" $MANAGER1_IP docker run --rm --name ucp -v /var/run/docker.sock:/var/run/docker.sock docker/ucp:$UCP_VERSION install --host-address $MANAGER1_IP --admin-username $SWARM_ADMIN --admin-password $SWARM_ADMIN_PWD > $LOG_DIR/install_output 2>&1
    echo "Done installing UCP"
    touch /tmp/ddc_up
 }
@@ -123,13 +121,13 @@ create_manager()
 echo "Pulling node images..."
 
 # Pull the image for the manager first and get that going
-docker pull $MASTER_IMAGE > /dev/null 2>&1
+docker pull $MASTER_IMAGE > $LOG_DIR/pull-master-output 2>&1
 
 # Create the manager in parallel to the other nodes
 create_manager &
 
 # Pull the image for the non-manager nodes
-docker pull $NODE_IMAGE > /dev/null 2>&1
+docker pull $NODE_IMAGE > $LOG_DIR/pull-node-output 2>&1
 
 for ((i=2; i<=$MANAGER_COUNT; i++))
 do
@@ -148,7 +146,7 @@ do
    sleep 2
 done
 
-tail -n 11 /tmp/install_output
+tail -n 11 $LOG_DIR/install_output
 
 MANAGER1_IP=$(docker inspect --format "{{ .NetworkSettings.Networks.$NODE_NETWORK.IPAddress }}" manager1)
 MTOKEN=$(ssh -i "$SSH_CERT_PATH/id_rsa" -o "UserKnownHostsFile=$SSH_CERT_PATH/known_hosts" $MANAGER1_IP docker swarm join-token -q manager)
