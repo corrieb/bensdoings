@@ -1,0 +1,31 @@
+{       
+   "swarm": {
+      "node": {
+         "image_cache": "5g",
+         "cpus": "2",
+         "mem": "2g",
+         "network": "ExternalNetwork"
+      },
+      "manager_count": "3",
+      "worker_count": "3",
+      "docker_opts": "-D"
+   },
+   "image": {
+      "master": {
+         "path": "bensdoings/dind-centos-ssh:latest",
+         "docker_opts": "-e LOCAL=true"
+      },
+      "node": {
+         "path": "bensdoings/dind-centos:latest",
+         "docker_opts": "-e LOCAL=true"
+      }
+   },
+   "ucp": {
+      "version": "2.1.3",
+      "admin": {
+         "name": "admin",
+         "password": "y7u8i9o0p"
+      }
+   }       
+}       
+
