@@ -65,4 +65,5 @@ If installation succeeded, you should now be able to access the cluster using ei
 
 ```
 > ssh -i /swarm-test/vch1/dev-cert/.ssh/id_rsa root@<master_ip>
+[root@a322901ef7b4 ~]# docker ps
 ```
