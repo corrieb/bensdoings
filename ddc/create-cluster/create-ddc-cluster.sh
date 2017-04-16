@@ -186,4 +186,4 @@ add_volume_driver
 
 add_udev
 
-echo "Log into your new DDC cluster with: > ssh -i <certs-vol>/.ssh/id_rsa <master-ip>
+echo "Log into your new DDC cluster with: > ssh -i <certs-vol>/.ssh/id_rsa <master-ip>"
