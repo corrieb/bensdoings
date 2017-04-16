@@ -1,22 +1,48 @@
 #!/bin/bash
 set -e
 
-if [ -z ${DOCKER_HOST+x} ]; then
-  echo "Environment variable DOCKER_HOST needs to be set to a valid VCH"
-  exit 1
-fi
-
 CONFIG_DIR="/config"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 CERT_PATH="/certs"
 MASTER_NAME="manager1"
 NODE_CREATE_RETRY="3"
 LOG_DIR="$CONFIG_DIR/logs"
+SSH_CERT_PATH="$CERT_PATH/.ssh"
+
+# Clear and create log dir
+[ -d $LOG_DIR ] && rm -fr $LOG_DIR
 mkdir -p $LOG_DIR
 
-SSH_CERT_PATH="$CERT_PATH/.ssh"
+validate_config()
+{
+   set +e
+   if [ -z ${DOCKER_HOST+x} ]; then
+      echo "Environment variable DOCKER_HOST needs to be set to a valid VCH"
+      exit 1
+   fi 
+
+   if [ ! -f "$CERT_PATH/key.pem" ]; then
+      echo "Certificate path needs to be mounted as a volume at $CERT_PATH"
+      exit 1
+   fi
+
+   if [ ! -f $CONFIG_FILE ]; then
+      echo "JSON config file must be at path /config/config.json by mounting /config as a volume"
+      exit 1
+   fi
+   
+   docker info > "$LOG_DIR/docker-info-test" 2>&1
+   if [ ! $? -eq 0 ]; then
+      echo "Could not connect to DOCKER_HOST, please check that it is correctly configured"
+      cat "$LOG_DIR/docker-info-test"
+      exit 1
+   fi
+}
+
 export DOCKER_TLS_VERIFY=1
 export DOCKER_CERT_PATH=$CERT_PATH
+
+validate_config
 
 NODE_NETWORK="$(jq -r ".swarm.node.network" $CONFIG_FILE)"
 NODE_IMAGE="$(jq -r ".image.node.path" $CONFIG_FILE)"
@@ -97,6 +123,7 @@ add_volume_driver()
 
 create_manager()
 {
+   set +e
    create_node "m1-vol" "$MASTER_NAME" "$MASTER_IMAGE" "$MASTER_DOCKER_OPTS"
 
    if [ ! -f "$SSH_CERT_PATH/id_rsa" ]; then
@@ -158,3 +185,4 @@ add_volume_driver
 
 add_udev
 
+echo "Log into your new DDC cluster with: > ssh -i <certs-vol>/.ssh/id_rsa <master-ip>
