@@ -123,6 +123,7 @@ add_volume_driver()
 
 create_manager()
 {
+   # Make sure that this completes, even if there's an error, otherwise the outer script will hang waiting for /tmp/ddc_up
    set +e
    create_node "m1-vol" "$MASTER_NAME" "$MASTER_IMAGE" "$MASTER_DOCKER_OPTS"
 
@@ -147,13 +148,13 @@ create_manager()
 
 echo "Pulling node images..."
 
-# Pull the image for the manager first and get that going
+# Pull the image for the master first and get that going
 docker pull $MASTER_IMAGE > $LOG_DIR/pull-master-output 2>&1
 
 # Create the manager in parallel to the other nodes
 create_manager &
 
-# Pull the image for the non-manager nodes
+# Pull the image for the non-master nodes
 docker pull $NODE_IMAGE > $LOG_DIR/pull-node-output 2>&1
 
 for ((i=2; i<=$MANAGER_COUNT; i++))
