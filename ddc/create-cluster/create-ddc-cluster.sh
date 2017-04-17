@@ -85,11 +85,13 @@ join_swarm_nodes()
    for ((i=2; i<=$MANAGER_COUNT; i++))
    do
       docker exec -d "manager"$i"" /usr/bin/docker swarm join --token $MTOKEN $MANAGER1_IP:2377
+      sleep 2
    done
 
    for ((i=1; i<=$WORKER_COUNT; i++))
    do
       docker exec -d "worker"$i"" /usr/bin/docker swarm join --token $WTOKEN $MANAGER1_IP:2377
+      sleep 2
    done
 }
 
