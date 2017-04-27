@@ -1,0 +1,102 @@
+{
+   "vch": {
+      "name": "myVCH",
+      "compute": {
+         "vsphere_resource": "MyCluster",
+         "memory": {
+            "limit_mb": "8192",
+            "reservation_mb": "4096",
+            "shares": "normal"
+         },
+         "cpu": {
+            "limit_mhz": "8000",
+            "reservation_mhz": "4000",
+            "shares": "normal"
+         }
+      },
+      "network": {
+         "bridge": {
+            "port_group": "t1-bridge",
+            "ip_range": "172.16.0.0/12"
+         },
+         "public": {
+            "port_group": "ExternalNetwork",
+            "vch_static_ip": "10.0.1.2/24",
+            "vch_gateway": "10.0.0.1"
+         },
+         "management": {
+            "port_group": "ManagementNetwork",
+            "vch_static_ip": "10.0.2.2/24",
+            "vch_gateway": "10.1.0.0/16,10.2.0.0/16:10.0.0.1"
+         },
+         "client": {
+            "port_group": "ClientNetwork",
+            "vch_static_ip": "10.0.0.2/24",
+            "vch_gateway": "10.1.0.0/16,10.2.0.0/16:10.0.0.1"
+         },
+         "container": {
+            "port_group": "vsphere-net",
+            "docker_alias": "mynetwork",
+            "ip_range": "172.16.0.0/24",
+            "gateway": "172.16.0.1/16",
+            "dns": "8.8.8.8"
+         }
+      },
+      "storage": {
+         "image_store": "iSCSI-nas-2",
+         "volume_store": "iSCSI-nas-2/t1:default",
+         "volumes_rm_on_delete": "true"
+      },
+      "auth": {
+         "cert_path": "/path/to/generated-or-provided",
+         "keygen": {
+            "cert_size": "2048",
+            "tls_cname": "*.eng.vmware.com",
+            "organization": ["myorg1.com", "myorg2.com"]
+         },
+         "client": {
+            "no_tls": "false",
+            "no_tls_verify": "false",
+            "tls_ca": ["/path/to/ca-file1", "/path/to/ca-file2"]
+         },
+         "server": {
+            "key_file": "file.name",
+            "cert_file": "file.name"
+         }
+      },
+      "endpoint_vm": {
+         "vcpus": "1",
+         "memory_mb": "2048"
+      },
+      "debug": {
+         "enable_ssh": "true",
+         "root_password": "y7u8i9o0p"
+      }
+   },
+   "vcenter": {
+      "address_datacenter": "10.118.68.111/MyDatacenter",
+      "use_resource_pool": "false",
+      "credentials": {
+         "thumbprint": "52:BD:29:58:A2:3F:C9:9A:9D:9C:65:DE:14:85:B3:8F:EA:F0:3D:A8",
+         "admin_user": "administrator@vsphere.local",
+         "admin_password": "'Admin!23'",
+         "vch_user": "tenant1@vsphere.local",
+         "vch_password": "t1pa55w0rd"
+       }
+   },
+   "registry": {
+      "insecure_registry": "10.118.66.101",
+      "registry_ca_files": ["/path/to/ca_cert1", "/path/to/ca_cert2"],
+      "image_fetch_proxy": {
+         "http": "http://fqdn_or_ip:port",
+         "https": "https://fqdn_or_ip:port"
+      }
+   },
+   "vic_machine": {
+      "debug": "0",
+      "timeout": "60s",
+      "appliance_iso": "/path/to/appliance.iso",
+      "bootstrap_iso": "/path/to/bootstrap.iso"
+   }
+}
+
