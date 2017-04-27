@@ -1,0 +1,58 @@
+{
+   "version": "1.1",
+   "vch": {
+      "name": "myVCH",
+      "compute": {
+         "vsphere_resource": "MyCluster",
+         "memory": {
+            "limit_mb": "8192"
+         },
+         "cpu": {
+            "limit_mhz": "8000"
+         }
+      },
+      "network": {
+         "bridge": {
+            "port_group": "t1-bridge"
+         },
+         "public": {
+            "port_group": "ExternalNetwork"
+         },
+         "container": {
+            "port_group": "ExternalNetwork"
+         }
+      },
+      "storage": {
+         "image_store": "iSCSI-nas-2",
+         "volume_store": "iSCSI-nas-2/t1:default",
+         "volumes_rm_on_delete": "true"
+      },
+      "auth": {
+         "keygen": {
+            "tls_cname": "*.eng.vmware.com"
+         }
+      },
+      "debug": {
+         "enable_ssh": "true",
+         "root_password": "y7u8i9o0p"
+      }
+   },
+   "vcenter": {
+      "address_datacenter": "10.118.68.111/MyDatacenter",
+      "credentials": {
+         "thumbprint": "52:BD:29:58:A2:3F:C9:9A:9D:9C:65:DE:14:85:B3:8F:EA:F0:3D:A8",
+         "admin_user": "administrator@vsphere.local",
+         "admin_password": "'Admin!23'",
+         "vch_user": "tenant1@vsphere.local",
+         "vch_password": "t1pa55w0rd"
+       }
+   },
+   "registry": {
+      "insecure_registry": "10.118.66.101"
+   },
+   "vic_machine": {
+      "debug": "0",
+      "timeout": "120s"
+   }
+}
+
