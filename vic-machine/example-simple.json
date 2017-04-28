@@ -24,7 +24,7 @@
       },
       "storage": {
          "image_store": "iSCSI-nas-2",
-         "volume_store": "iSCSI-nas-2/t1:default",
+         "volume_stores": ["iSCSI-nas-2/t1:default"],
          "volumes_rm_on_delete": true
       },
       "auth": {
@@ -48,7 +48,7 @@
        }
    },
    "registry": {
-      "insecure_registry": "10.118.66.101"
+      "insecure_registries": ["10.118.66.101"]
    },
    "vic_machine": {
       "debug": "0",

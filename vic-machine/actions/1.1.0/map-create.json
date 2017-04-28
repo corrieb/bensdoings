@@ -20,7 +20,6 @@
       "--client-network-ip": ".vch.network.client.vch_static_ip",
       "--client-network-gateway": ".vch.network.client.vch_gateway",
       "--image-store": ".vch.storage.image_store",
-      "--volume-store": ".vch.storage.volume_store",
       "--cert-path": ".vch.auth.cert_path",
       "--certificate-key-size": ".vch.auth.keygen.cert_size",
       "--tls-cname": ".vch.auth.keygen.tls_cname",
@@ -34,7 +33,6 @@
       "--password": ".vcenter.credentials.admin_password",
       "--ops-user": ".vcenter.credentials.vch_user",
       "--ops-password": ".vcenter.credentials.vch_password",
-      "--insecure-registry": ".registry.insecure_registry",
       "--http-proxy": ".registry.image_fetch_proxy.http",
       "--https-proxy": ".registry.image_fetch_proxy.https",
       "--debug": ".vic_machine.debug",
@@ -48,8 +46,10 @@
       "--use-rp": ".vcenter.use_resource_pool"
    },
    "array": {
+      "--volume-store": ".vch.storage.volume_stores",
       "--tls-ca": ".vch.auth.client.tls_ca",
       "--organization": ".vch.auth.keygen.organization",
+      "--insecure-registry": ".registry.insecure_registries",
       "--registry-ca": ".registry.registry_ca_files"
    },
    "container_network": {
