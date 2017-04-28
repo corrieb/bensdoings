@@ -1,0 +1,10 @@
+{
+   "key_value": {
+      "--name": ".vch.name",
+      "--compute-resource": ".vch.compute.vsphere_resource",
+      "--target": ".vcenter.address_datacenter",
+      "--user": ".vcenter.credentials.admin_user",
+      "--password": ".vcenter.credentials.admin_password"
+   }
+}
+

@@ -14,4 +14,5 @@ docker build -f Dockerfile.inspect -t $REPO_NAME/vic-machine-inspect:$VERSION .
 docker build -f Dockerfile.ls -t $REPO_NAME/vic-machine-ls:$VERSION .
 docker build -f Dockerfile.rollback -t $REPO_NAME/vic-machine-rollback:$VERSION .
 docker build -f Dockerfile.upgrade -t $REPO_NAME/vic-machine-upgrade:$VERSION .
+docker build -f Dockerfile.thumbprint -t $REPO_NAME/vic-machine-thumbprint:$VERSION .
 rm Dockerfile*
