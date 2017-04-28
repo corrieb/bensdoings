@@ -1,0 +1,15 @@
+{
+   "key_value": {
+      "--name": ".vch.name",
+      "--compute-resource": ".vch.compute.vsphere_resource",
+      "--target": ".vcenter.address_datacenter",
+      "--thumbprint": ".vcenter.credentials.thumbprint",
+      "--user": ".vcenter.credentials.admin_user",
+      "--password": ".vcenter.credentials.admin_password",
+      "--timeout": ".vic_machine.timeout"
+   },
+   "bool": {
+      "--force": ".vch.storage.volumes_rm_on_delete"
+   }
+}
+

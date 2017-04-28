@@ -18,14 +18,14 @@
          "public": {
             "port_group": "ExternalNetwork"
          },
-         "container": {
-            "port_group": "ExternalNetwork"
-         }
+         "container": [
+            { "port_group": "ExternalNetwork" }
+         ]
       },
       "storage": {
          "image_store": "iSCSI-nas-2",
          "volume_store": "iSCSI-nas-2/t1:default",
-         "volumes_rm_on_delete": "true"
+         "volumes_rm_on_delete": true
       },
       "auth": {
          "keygen": {
@@ -33,7 +33,7 @@
          }
       },
       "debug": {
-         "enable_ssh": "true",
+         "enable_ssh": true,
          "root_password": "y7u8i9o0p"
       }
    },

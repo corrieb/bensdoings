@@ -35,29 +35,34 @@
             "vch_static_ip": "10.0.0.2/24",
             "vch_gateway": "10.1.0.0/16,10.2.0.0/16:10.0.0.1"
          },
-         "container": {
-            "port_group": "vsphere-net",
-            "docker_alias": "mynetwork",
-            "ip_range": "172.16.0.0/24",
-            "gateway": "172.16.0.1/16",
-            "dns": "8.8.8.8"
-         }
+         "container": [
+            {
+               "port_group": "vsphere-net-dhcp"
+            },
+            {
+               "port_group": "vsphere-net2",
+               "alias": "mynetwork2",
+               "ip_range": "172.16.1.0/24",
+               "gateway": "172.16.1.1/16",
+               "dns": "8.8.8.8"
+            }
+         ]
       },
       "storage": {
          "image_store": "iSCSI-nas-2",
          "volume_store": "iSCSI-nas-2/t1:default",
-         "volumes_rm_on_delete": "true"
+         "volumes_rm_on_delete": true
       },
       "auth": {
          "cert_path": "/path/to/generated-or-provided",
          "keygen": {
             "cert_size": "2048",
             "tls_cname": "*.eng.vmware.com",
-            "organization": ["myorg1.com", "myorg2.com"]
+            "organization": ["myorg1.com", "myorg2.com", "myorg3.com"]
          },
          "client": {
-            "no_tls": "false",
-            "no_tls_verify": "false",
+            "no_tls": true,
+            "no_tls_verify": false,
             "tls_ca": ["/path/to/ca-file1", "/path/to/ca-file2"]
          },
          "server": {
@@ -70,13 +75,14 @@
          "memory_mb": "2048"
       },
       "debug": {
-         "enable_ssh": "true",
+         "enable_ssh": true,
+         "authorized_key_file": "/path/to/keyfile",
          "root_password": "y7u8i9o0p"
       }
    },
    "vcenter": {
       "address_datacenter": "10.118.68.111/MyDatacenter",
-      "use_resource_pool": "false",
+      "use_resource_pool": true,
       "credentials": {
          "thumbprint": "52:BD:29:58:A2:3F:C9:9A:9D:9C:65:DE:14:85:B3:8F:EA:F0:3D:A8",
          "admin_user": "administrator@vsphere.local",
@@ -97,7 +103,8 @@
       "debug": "0",
       "timeout": "120s",
       "appliance_iso": "/path/to/appliance.iso",
-      "bootstrap_iso": "/path/to/bootstrap.iso"
+      "bootstrap_iso": "/path/to/bootstrap.iso",
+      "upgrade_ignore_version_check": false
    }
 }
 
