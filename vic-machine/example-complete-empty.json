@@ -1,0 +1,107 @@
+{
+   "version": "1.1",
+   "vch": {
+      "name": "",
+      "compute": {
+         "vsphere_resource": "",
+         "memory": {
+            "limit_mb": "",
+            "reservation_mb": "",
+            "shares": ""
+         },
+         "cpu": {
+            "limit_mhz": "",
+            "reservation_mhz": "",
+            "shares": ""
+         }
+      },
+      "network": {
+         "bridge": {
+            "port_group": "",
+            "ip_range": ""
+         },
+         "public": {
+            "port_group": "",
+            "vch_static_ip": "",
+            "vch_gateway": ""
+         },
+         "management": {
+            "port_group": "",
+            "vch_static_ip": "",
+            "vch_gateway": ""
+         },
+         "client": {
+            "port_group": "",
+            "vch_static_ip": "",
+            "vch_gateway": ""
+         },
+         "container": [
+            {
+               "port_group": "",
+               "alias": "",
+               "ip_range": "",
+               "gateway": "",
+               "dns": ""
+            }
+         ]
+      },
+      "storage": {
+         "image_store": "",
+         "volume_store": "",
+         "volumes_rm_on_delete": false
+      },
+      "auth": {
+         "cert_path": "",
+         "keygen": {
+            "cert_size": "",
+            "tls_cname": "",
+            "organization": []
+         },
+         "client": {
+            "no_tls": false,
+            "no_tls_verify": false,
+            "tls_ca": []
+         },
+         "server": {
+            "key_file": "",
+            "cert_file": ""
+         }
+      },
+      "endpoint_vm": {
+         "vcpus": "",
+         "memory_mb": ""
+      },
+      "debug": {
+         "enable_ssh": false,
+         "authorized_key_file": "",
+         "root_password": ""
+      }
+   },
+   "vcenter": {
+      "address_datacenter": "",
+      "use_resource_pool": false,
+      "credentials": {
+         "thumbprint": "",
+         "admin_user": "",
+         "admin_password": "",
+         "vch_user": "",
+         "vch_password": ""
+       }
+   },
+   "registry": {
+      "insecure_registry": "",
+      "registry_ca_files": [],
+      "image_fetch_proxy": {
+         "http": "",
+         "https": ""
+      }
+   },
+   "vic_machine": {
+      "debug": "",
+      "timeout": "",
+      "appliance_iso": "",
+      "bootstrap_iso": "",
+      "upgrade_ignore_version_check": false
+   }
+}
+

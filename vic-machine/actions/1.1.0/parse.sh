@@ -30,26 +30,26 @@ if [ $version != $config_version ]; then
 fi
 
 kv_map=$(cat $2 | jq -c '.key_value' | sed "s/\"\././g; s/\"\,/,/g; s/\"\}/}/g")
-kv_query="$kv_map | del(.[] | nulls) | to_entries[] | .key,.value"
+kv_query="$kv_map | to_entries[] | select (.value | length > 0) | .key,.value"
 
 bool_map=$(cat $2 | jq -c '.bool' | sed "s/\"\././g; s/\"\,/,/g; s/\"\}/}/g")
 bool_query="$bool_map | to_entries[] | select (.value==true) | .key"
 
 array_map=$(cat $2 | jq -c '.array' | sed "s/\"\././g; s/\"\,/,/g; s/\"\}/}/g")
-array_query="$array_map | del(.[] | nulls) | to_entries[] | {key, value: .value[]} | .key,.value" 
+array_query="$array_map | to_entries[] | select (.value | length > 0) | {key, value: .value[]} | .key,.value" 
 
 container_net_map=$(cat $2 | jq -c '.container_network' | sed "s/\"(/(/g; s/\"\,/,/g; s/\"\}/}/g; s/{\"query\":\"//; s/| ,\"/| {\"/; s/':'/\":\"/g")
-container_net_query="$container_net_map | del(.[] | nulls) | to_entries[] | .key,.value"
+container_net_query="$container_net_map | to_entries[] | select (.value | length > 0) | .key,.value"
 
 kv_map_output=$(cat $1 | jq -c "$kv_query")
 
-if [ $bool_map != "null" ]; then
+if [ "$bool_map" != "null" ]; then
    bool_map_output=$(cat $1 | jq -c "$bool_query")
 fi
-if [ $array_map != "null" ]; then
+if [ "$array_map" != "null" ]; then
    array_map_output=$(cat $1 | jq -c "$array_query")
 fi
-if [ $container_net_map != "null" ]; then
+if [ "$container_net_map" != "null" ]; then
   container_net_map_output=$(cat $1 | jq -c "$container_net_query")
 fi
 

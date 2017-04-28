@@ -62,7 +62,7 @@
          },
          "client": {
             "no_tls": true,
-            "no_tls_verify": false,
+            "no_tls_verify": true,
             "tls_ca": ["/path/to/ca-file1", "/path/to/ca-file2"]
          },
          "server": {
@@ -104,7 +104,7 @@
       "timeout": "120s",
       "appliance_iso": "/path/to/appliance.iso",
       "bootstrap_iso": "/path/to/bootstrap.iso",
-      "upgrade_ignore_version_check": false
+      "upgrade_ignore_version_check": true
    }
 }
 
