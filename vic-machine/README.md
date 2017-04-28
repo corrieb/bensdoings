@@ -8,7 +8,7 @@ Here's how to get started:
 
 **Usage**
 
-Use the example.json in the repository as a starting point, edit it and place it in a subdirectory with a memorable name. Name it config.json. (Note you can find the correct thumprint by running ``create`` without a thumbprint)
+Use the example json files in the repository as a starting point, edit it and place it in a subdirectory with a memorable name. Name it config.json. (Note you can find the correct thumprint by running ``vic-machine-thumbprint`` without a thumbprint)
 
 Now copy ./vic-machine.sh into the root of your local folder. You should now see:
 
@@ -25,4 +25,4 @@ Note that any generated certificates will be placed in the subdirectory you sele
 
 **Modifying**
 
-You'll see that the JSON keys map to vic-machine arguments in ``actions/map-x.json``. You can define your own JSON schema by simply modifying those files.
+You'll see that the JSON keys map to vic-machine arguments in ``actions/map-x.json``. If you wish, you can define your own JSON schema by simply modifying those files.
