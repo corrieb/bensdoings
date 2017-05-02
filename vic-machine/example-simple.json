@@ -42,7 +42,6 @@
       "credentials": {
          "thumbprint": "52:BD:29:58:A2:3F:C9:9A:9D:9C:65:DE:14:85:B3:8F:EA:F0:3D:A8",
          "admin_user": "administrator@vsphere.local",
-         "admin_password": "'Admin!23'",
          "vch_user": "tenant1@vsphere.local",
          "vch_password": "t1pa55w0rd"
        }

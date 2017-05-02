@@ -5,6 +5,7 @@
 # In that subdirectory should be a config.json file which conforms to the format in example.json 
 # That subdirectory is then both the input and working directory of vic-machine
 # As such, generated certificates and log files will be written to that sub directory as root user
+# Note that if you don't specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it
 
 if [  $# -le 2 ] 
 then 
@@ -14,4 +15,4 @@ then
    exit 1
 fi
 
-docker run -v $(pwd)/$2:/config bensdoings/vic-machine-$3:$1
+docker run -it -v $(pwd)/$2:/config bensdoings/vic-machine-$3:$1
