@@ -1,0 +1,7 @@
+FROM vic-machine-base:latest
+
+COPY parse.sh map-firewall.json /
+
+WORKDIR /config
+
+CMD /vic/vic-machine-linux update firewall --allow $(/parse.sh /config/config.json /map-firewall.json)

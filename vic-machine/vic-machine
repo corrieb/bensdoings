@@ -10,9 +10,8 @@ if [  $# -le 2 ]
 then 
    echo "Usage: vic-machine.sh <version> <config-dir> <action>"
    echo "  Where version is \"latest\" or <version number>-<optional rc> eg. 1.0.0-rc5"
-   echo "  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback"
+   echo "  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback | thumbprint | firewall-allow | firewall-deny"
    exit 1
 fi
 
-VERSION=latest
-docker run -v $(pwd)/$2:/config bensdoings/vic-machine-$3:$VERSION
+docker run -v $(pwd)/$2:/config bensdoings/vic-machine-$3:$1
