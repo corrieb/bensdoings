@@ -10,19 +10,23 @@ Here's how to get started:
 
 Use the example json files in the repository as a starting point, edit it and place it in a subdirectory with a memorable name. Name it config.json. (Note you can find the correct thumprint by running ``vic-machine-thumbprint`` without a thumbprint)
 
-Now copy ./vic-machine.sh into the root of your local folder. You should now see:
+Now copy ./vic-machine into the root of your local folder. You should now see:
 
 ```
 > ls -l
-vic-machine.sh
+vic-machine
 MyVCH/config.json
 ```
-Now simply run ``./vic-machine.sh`` to see how to use it. 
+Now simply run ``./vic-machine`` to see how to use it. 
 
-To create a VCH with the latest version of VIC, you simply run ``./vic-machine.sh latest MyVCH create``
+To create a VCH with the latest version of VIC, you simply run ``./vic-machine latest MyVCH create``
 
 Note that any generated certificates will be placed in the subdirectory you selected under another subdirectory of the same name
 
 **Modifying**
 
 You'll see that the JSON keys map to vic-machine arguments in ``actions/map-x.json``. If you wish, you can define your own JSON schema by simply modifying those files.
+
+**Building Your Own Images From The VIC OVA**
+
+Coming soon!
