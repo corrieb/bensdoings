@@ -7,14 +7,32 @@
 # As such, generated certificates and log files will be written to that sub directory as root user
 # Note that if you don't specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it
 
-if [  $# -le 2 ] 
-then 
+usage()
+{
    echo "Usage: vic-machine.sh <version> <config-dir> <action>"
    echo "  Where version is \"latest\" or <version number>-<optional rc> eg. 1.0.0-rc5"
    echo "  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback | thumbprint | firewall-allow | firewall-deny"
    exit 1
-fi
+}
+
+if [ $# -le 2 ]; then usage; fi
+
+case "$3" in 
+  create|delete|inspect|ls|debug|upgrade|rollback|thumbprint|firewall-allow|firewall-deny)
+    ;;
+  *)
+    usage
+    ;;
+esac
 
 host_config_path=$(pwd)/$2
+
+if [ ! -f "$host_config_path/config.json" ]; then
+  echo "Config file not found at $host_config_path/config.json"
+  exit 1
+fi
+
 docker_volume_path=/config
-docker run -it -v $host_config_path:$docker_volume_path bensdoings/vic-machine-$3:$1 | sed "s|$docker_volume_path/|$host_config_path/|"
+repo_name="bensdoings"
+
+sudo docker run -it -v $host_config_path:$docker_volume_path $repo_name/vic-machine-$3:$1 | sed "s|$docker_volume_path/|$host_config_path/|"
