@@ -11,14 +11,15 @@ usage()
 {
    echo "Usage: vic-machine.sh <version> <config-dir> <action>"
    echo "  Where version is \"latest\" or <version number>-<optional rc> eg. 1.0.0-rc5"
-   echo "  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback | thumbprint | firewall-allow | firewall-deny"
+   echo "  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback | thumbprint | firewall-allow | firewall-deny | dumpargs"
+   echo "  Use dumpargs action to show the args the script generates for vic-machine-create"
    exit 1
 }
 
 if [ $# -le 2 ]; then usage; fi
 
 case "$3" in 
-  create|delete|inspect|ls|debug|upgrade|rollback|thumbprint|firewall-allow|firewall-deny)
+  create|delete|inspect|ls|debug|upgrade|rollback|thumbprint|firewall-allow|firewall-deny|dumpargs)
     ;;
   *)
     usage
