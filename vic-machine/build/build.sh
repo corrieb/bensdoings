@@ -17,4 +17,6 @@ docker build -f Dockerfile.upgrade -t $REPO_NAME/vic-machine-upgrade:$VERSION .
 docker build -f Dockerfile.thumbprint -t $REPO_NAME/vic-machine-thumbprint:$VERSION .
 docker build -f Dockerfile.firewall-allow -t $REPO_NAME/vic-machine-firewall-allow:$VERSION .
 docker build -f Dockerfile.firewall-deny -t $REPO_NAME/vic-machine-firewall-deny:$VERSION .
+docker build -f Dockerfile.dumpargs -t $REPO_NAME/vic-machine-dumpargs:$VERSION .
 rm Dockerfile*
+

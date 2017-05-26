@@ -4,4 +4,4 @@ COPY parse.sh map-upgrade.json /
 
 WORKDIR /config
 
-CMD /vic/vic-machine-linux upgrade $(/parse.sh /config/config.json /map-upgrade.json)
+CMD /bin/sh -c "/vic/vic-machine-linux upgrade $(/parse.sh /config/config.json /map-upgrade.json)"

@@ -4,4 +4,4 @@ COPY parse.sh map-create.json /
 
 WORKDIR /config
 
-CMD /vic/vic-machine-linux create $(/parse.sh /config/config.json /map-create.json)
+CMD /bin/sh -c "/vic/vic-machine-linux create $(/parse.sh /config/config.json /map-create.json)"

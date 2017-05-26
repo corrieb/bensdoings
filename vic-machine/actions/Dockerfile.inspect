@@ -4,4 +4,4 @@ COPY parse.sh map-inspect.json /
 
 WORKDIR /config
 
-CMD /vic/vic-machine-linux inspect $(/parse.sh /config/config.json /map-inspect.json)
+CMD /bin/sh -c "/vic/vic-machine-linux inspect $(/parse.sh /config/config.json /map-inspect.json)"
