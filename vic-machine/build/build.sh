@@ -3,7 +3,7 @@
 # Builds against vic-machine-base:latest
 
 REPO_NAME="bensdoings"
-MAP_VERSION="1.1.0"
+MAP_VERSION="1.1"
 VERSION="1.1.1"
 
 cd ../actions/$MAP_VERSION
