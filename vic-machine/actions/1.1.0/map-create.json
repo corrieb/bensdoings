@@ -20,6 +20,7 @@
       "--client-network-ip": ".vch.network.client.vch_static_ip",
       "--client-network-gateway": ".vch.network.client.vch_gateway",
       "--image-store": ".vch.storage.image_store",
+      "--base-image-size": ".vch.storage.base_image_size",
       "--cert-path": ".vch.auth.cert_path",
       "--certificate-key-size": ".vch.auth.keygen.cert_size",
       "--tls-cname": ".vch.auth.keygen.tls_cname",

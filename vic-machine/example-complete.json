@@ -51,6 +51,7 @@
       "storage": {
          "image_store": "iSCSI-nas-2",
          "volume_stores": ["iSCSI-nas-2/t1:default", "iSCSI-nas-1/t1:backup"],
+         "base_image_size": "8GB",
          "volumes_rm_on_delete": true
       },
       "auth": {

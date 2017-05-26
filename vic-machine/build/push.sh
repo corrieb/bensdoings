@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO_NAME="bensdoings"
-VERSION="1.1.0"
+VERSION="1.1.1"
 
 docker push $REPO_NAME/vic-machine-create:$VERSION
 docker push $REPO_NAME/vic-machine-debug:$VERSION

@@ -3,9 +3,10 @@
 # Builds against vic-machine-base:latest
 
 REPO_NAME="bensdoings"
-VERSION="1.1.0"
+MAP_VERSION="1.1.0"
+VERSION="1.1.1"
 
-cd ../actions/$VERSION
+cd ../actions/$MAP_VERSION
 cp ../Dockerfile* .
 docker build -f Dockerfile.create -t $REPO_NAME/vic-machine-create:$VERSION .
 docker build -f Dockerfile.debug -t $REPO_NAME/vic-machine-debug:$VERSION .

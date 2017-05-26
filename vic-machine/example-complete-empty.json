@@ -48,6 +48,7 @@
       "storage": {
          "image_store": "",
          "volume_stores": [],
+         "base_image_size": "",
          "volumes_rm_on_delete": false
       },
       "auth": {
