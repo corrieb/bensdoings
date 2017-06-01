@@ -27,27 +27,27 @@ Note that any generated certificates will be placed in the subdirectory you sele
 
 Once you've successfully installed the VIC OVA, if you want to use this capability, the most obvious thing is to build and push vic-machine to your registry. You can then run vic-machine anywhere that can see your registry. There are some very small modifications to the scripts to show you how to do this.
 
-Step 1: Build the images
+*Step 1: Build the images*
 
-In order to build the images, you need a recent version of docker installed locally.
-Once you have that, modify the Dockerfile in vic-machine/vic-machine-base/OVA to point to your registry IP and the correct tar file name
-To see the tar file name to specify, you can use ``wget -qO- --no-check-certificate https://<ipaddress>:9443``
-Once that's correct, edit vic-machine/build/build.sh and change the following:
-- Set BUILD_FROM_OVA=true 
-- Set REPO_NAME to your desired registry IP and project name. You'll see an example provided
-You can now run build.sh
+In order to build the images, you need a recent version of docker installed locally. 
+- Once you have that, modify the Dockerfile in vic-machine/vic-machine-base/OVA to point to your registry IP and the correct tar file name
+  - To see the tar file name to specify, you can use ``wget -qO- --no-check-certificate https://<ipaddress>:9443``
+- Once that's correct, edit vic-machine/build/build.sh and change the following:
+  - Set BUILD_FROM_OVA=true 
+  - Set REPO_NAME to your desired registry IP and project name. You'll see an example provided
+- You can now run build.sh
 
-Step 2: Push the images
+*Step 2: Push the images*
 
 In order to push the images, you need a project set up with a user that you will then need to authenticate as:
 - Navigate to the VIC registry
 - Create a new Project
 - Add yourself as a user with push permissions
 - From your docker client, type ``docker login <ipaddress>`` and authenticate with the registry
-    Note that if this is your first time authenticating, you'll need to add ca.crt to ``/etc/docker/certs.d/<ipaddress>/`` and restart the docker daemon
-    You download ca.crt from VIC registry by selecting "admin" in the top right and "Download Root Cert"
-Edit the vic-machine/build/push.sh script and set the REPO_NAME to point to the same one you used in the build script
-You can now run push.sh
+  - Note that if this is your first time authenticating, you'll need to add ca.crt to ``/etc/docker/certs.d/<ipaddress>/`` and restart the docker daemon
+  - You download ca.crt from VIC registry by selecting "admin" in the top right and "Download Root Cert"
+- Edit the vic-machine/build/push.sh script and set the REPO_NAME to point to the same one you used in the build script
+- You can now run push.sh
 
 **Modifying**
 
