@@ -8,7 +8,9 @@ VERSION="1.1.1"
 
 actions=( "create" "debug" "delete" "inspect" "ls" "rollback" "upgrade" "thumbprint" "firewall-allow" "firewall-deny" "dumpargs" "direct" )
 
-cd ../actions/$MAP_VERSION
+cd ../vic-machine-base/$VERSION
+docker build -t vic-machine-base .
+cd ../../actions/$MAP_VERSION
 cp ../Dockerfile* .
 
 for i in "${actions[@]}"
