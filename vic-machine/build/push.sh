@@ -25,7 +25,7 @@ docker tag $REPO_NAME/vic-machine-upgrade:$VERSION $REPO_NAME/vic-machine-upgrad
 docker tag $REPO_NAME/vic-machine-thumbprint:$VERSION $REPO_NAME/vic-machine-thumbprint:latest
 docker tag $REPO_NAME/vic-machine-firewall-allow:$VERSION $REPO_NAME/vic-machine-firewall-allow:latest
 docker tag $REPO_NAME/vic-machine-firewall-deny:$VERSION $REPO_NAME/vic-machine-firewall-deny:latest
-docker tag $REPO_NAME/vic-machine-firewall-dumpargs:$VERSION $REPO_NAME/vic-machine-firewall-dumpargs:latest
+docker tag $REPO_NAME/vic-machine-dumpargs:$VERSION $REPO_NAME/vic-machine-dumpargs:latest
 
 docker push $REPO_NAME/vic-machine-create:latest
 docker push $REPO_NAME/vic-machine-debug:latest
