@@ -3,38 +3,12 @@
 REPO_NAME="bensdoings"
 VERSION="1.1.1"
 
-docker push $REPO_NAME/vic-machine-create:$VERSION
-docker push $REPO_NAME/vic-machine-debug:$VERSION
-docker push $REPO_NAME/vic-machine-delete:$VERSION
-docker push $REPO_NAME/vic-machine-inspect:$VERSION
-docker push $REPO_NAME/vic-machine-ls:$VERSION
-docker push $REPO_NAME/vic-machine-rollback:$VERSION
-docker push $REPO_NAME/vic-machine-upgrade:$VERSION
-docker push $REPO_NAME/vic-machine-thumbprint:$VERSION
-docker push $REPO_NAME/vic-machine-firewall-allow:$VERSION
-docker push $REPO_NAME/vic-machine-firewall-deny:$VERSION
-docker push $REPO_NAME/vic-machine-firewall-dumpargs:$VERSION
+actions=( "create" "debug" "delete" "inspect" "ls" "rollback" "upgrade" "thumbprint" "firewall-allow" "firewall-deny" "dumpargs" "direct" )
 
-docker tag $REPO_NAME/vic-machine-create:$VERSION $REPO_NAME/vic-machine-create:latest
-docker tag $REPO_NAME/vic-machine-debug:$VERSION $REPO_NAME/vic-machine-debug:latest
-docker tag $REPO_NAME/vic-machine-delete:$VERSION $REPO_NAME/vic-machine-delete:latest
-docker tag $REPO_NAME/vic-machine-inspect:$VERSION $REPO_NAME/vic-machine-inspect:latest
-docker tag $REPO_NAME/vic-machine-ls:$VERSION $REPO_NAME/vic-machine-ls:latest
-docker tag $REPO_NAME/vic-machine-rollback:$VERSION $REPO_NAME/vic-machine-rollback:latest
-docker tag $REPO_NAME/vic-machine-upgrade:$VERSION $REPO_NAME/vic-machine-upgrade:latest
-docker tag $REPO_NAME/vic-machine-thumbprint:$VERSION $REPO_NAME/vic-machine-thumbprint:latest
-docker tag $REPO_NAME/vic-machine-firewall-allow:$VERSION $REPO_NAME/vic-machine-firewall-allow:latest
-docker tag $REPO_NAME/vic-machine-firewall-deny:$VERSION $REPO_NAME/vic-machine-firewall-deny:latest
-docker tag $REPO_NAME/vic-machine-dumpargs:$VERSION $REPO_NAME/vic-machine-dumpargs:latest
+for i in "${actions[@]}"
+do
+   docker tag $REPO_NAME/vic-machine-$i:$VERSION $REPO_NAME/vic-machine-$i:latest
+   docker push $REPO_NAME/vic-machine-$i:$VERSION
+   docker push $REPO_NAME/vic-machine-$i:latest
+done
 
-docker push $REPO_NAME/vic-machine-create:latest
-docker push $REPO_NAME/vic-machine-debug:latest
-docker push $REPO_NAME/vic-machine-delete:latest
-docker push $REPO_NAME/vic-machine-inspect:latest
-docker push $REPO_NAME/vic-machine-ls:latest
-docker push $REPO_NAME/vic-machine-rollback:latest
-docker push $REPO_NAME/vic-machine-upgrade:latest
-docker push $REPO_NAME/vic-machine-thumbprint:latest
-docker push $REPO_NAME/vic-machine-firewall-allow:latest
-docker push $REPO_NAME/vic-machine-firewall-deny:latest
-docker push $REPO_NAME/vic-machine-dumpargs:latest
