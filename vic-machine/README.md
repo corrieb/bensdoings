@@ -33,7 +33,7 @@ If you want, you can use the script to generate args and then use those args to 
 
 ```
 > docker run bensdoings/vic-machine-direct:1.1.1
-Use this image to run vic-machine directly: docker run <image> vic-machine-linux <cmd> <args>
+Use this image to run vic-machine directly: docker run <image> -v <certs-dir>:/certs vic-machine-linux <cmd> <args>
 
 > docker run bensdoings/vic-machine-direct:1.1.1 vic-machine-linux create --help
 NAME:
@@ -48,6 +48,7 @@ NAME:
 > docker run -v $(pwd)/MyVCH:/certs bensdoings/vic-machine-direct:1.1.1 vic-machine-linux create $(cat args.txt | tr "\r" " ")
 Jun  1 2017 16:38:15.154Z INFO  ### Installing VCH ####
 ...
+```
 
 **Building Your Own Images From The VIC OVA**
 
