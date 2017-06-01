@@ -36,4 +36,9 @@ fi
 docker_volume_path=/config
 repo_name="bensdoings"
 
+if [ ! $(docker pull $repo_name/vic-machine-$3:$1 > /dev/null 2>&1) ]; then
+  echo "Action \"$3\" or version \"$1\" not found"
+  exit 1
+fi
+
 sudo docker run -it -v $host_config_path:$docker_volume_path $repo_name/vic-machine-$3:$1 | sed "s|$docker_volume_path/|$host_config_path/|"
