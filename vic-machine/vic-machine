@@ -7,6 +7,12 @@
 # As such, generated certificates and log files will be written to that sub directory as root user
 # Note that if you don't specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it
 
+# consume images from dockerhub
+REPO_NAME="bensdoings"
+
+# consume images from a local registry
+# REPO_NAME="10.118.69.29/vic-machine"
+
 usage()
 {
    echo "Usage: vic-machine.sh <version> <config-dir> <action>"
@@ -34,11 +40,12 @@ if [ ! -f "$host_config_path/config.json" ]; then
 fi
 
 docker_volume_path=/config
-repo_name="bensdoings"
 
-if [ ! $(docker pull $repo_name/vic-machine-$3:$1 > /dev/null 2>&1) ]; then
+# Check to see whether the combination of version and action actually exist
+docker pull $REPO_NAME/vic-machine-$3:$1 > /dev/null 2>&1
+if [ $? != 0 ]; then
   echo "Action \"$3\" or version \"$1\" not found"
   exit 1
 fi
 
-sudo docker run -it -v $host_config_path:$docker_volume_path $repo_name/vic-machine-$3:$1 | sed "s|$docker_volume_path/|$host_config_path/|"
+sudo docker run -it -v $host_config_path:$docker_volume_path $REPO_NAME/vic-machine-$3:$1 | sed "s|$docker_volume_path/|$host_config_path/|"

@@ -1,6 +1,13 @@
 #!/bin/bash
+set -e
 
+# push to dockerhub
 REPO_NAME="bensdoings"
+
+# push to local registry
+#   note you'll need to create the project "vic-machine", add yourself to the project and run docker login with your credentials before pushing
+# REPO_NAME="10.118.69.29/vic-machine"
+
 VERSION="1.1.1"
 
 actions=( "create" "debug" "delete" "inspect" "ls" "rollback" "upgrade" "thumbprint" "firewall-allow" "firewall-deny" "dumpargs" "direct" )
