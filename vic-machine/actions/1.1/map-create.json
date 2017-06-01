@@ -19,6 +19,7 @@
       "--client-network": ".vch.network.client.port_group",
       "--client-network-ip": ".vch.network.client.vch_static_ip",
       "--client-network-gateway": ".vch.network.client.vch_gateway",
+      "--dns-server": ".vch.network.dns_server",
       "--image-store": ".vch.storage.image_store",
       "--base-image-size": ".vch.storage.base_image_size",
       "--cert-path": ".vch.auth.cert_path",

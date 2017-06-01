@@ -43,7 +43,8 @@
                "gateway": "",
                "dns": ""
             }
-         ]
+         ],
+         "dns_server": ""
       },
       "storage": {
          "image_store": "",

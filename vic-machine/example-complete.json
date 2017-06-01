@@ -46,7 +46,8 @@
                "gateway": "172.16.1.1/16",
                "dns": "8.8.8.8"
             }
-         ]
+         ],
+         "dns_server": "8.8.8.8"
       },
       "storage": {
          "image_store": "iSCSI-nas-2",
