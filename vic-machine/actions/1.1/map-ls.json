@@ -5,6 +5,7 @@
       "--thumbprint": ".vcenter.credentials.thumbprint",
       "--user": ".vcenter.credentials.admin_user",
       "--password": ".vcenter.credentials.admin_password",
+      "--debug": ".vic_machine.debug",
       "--timeout": ".vic_machine.timeout"
    }
 }
