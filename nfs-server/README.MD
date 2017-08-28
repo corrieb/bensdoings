@@ -20,7 +20,7 @@ So you'll notice that `kmod` is loaded in the Dockerfile and the script that sta
 
 **Building the container**
 
-Build the container with regular Docker, just as you would any other container. I've built one to DockerHub at bensdoings/nfs-server:latest which you're welcome to try at your leisure.
+Build the container with regular Docker, just as you would any other container. I've built one to DockerHub at `bensdoings/nfs-server:latest` which you'll see used in the examples below.
 
 ```
 docker build -t <registry-name>/<project-name>/nfs-server:<version> .
