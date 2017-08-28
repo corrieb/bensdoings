@@ -59,7 +59,6 @@ Let's now start an NFS client interactively in another container and see if we c
 
 ```
 docker run -it bensdoings/nfs-server /bin/bash
-$ modprobe nfs
 $ service rpcbind start
 $ service nfs-common start
 $ mkdir /mnt/nfs-share
@@ -122,9 +121,44 @@ docker run -d -v nfs-vol:/mnt/nfs-vol --net ExternalNetwork --name nfs-server1 -
 ```
 The other two ports are currently fixed as these are standard NFS ports. On a container-network, there are no issues with port conflicts since every container gets its own network identity.
 
+**Creating a Volume Store from an NFS share (VIC 1.2+ only)**
 
+New in VIC 1.2 is the ability to create a container volume store from an NFS share. This adds the capability for containers to mount shared read/write storage completely transparently. Use-cases are:
 
+ - Seeding containers with shared read-only dependencies, such as builds or tools
+ - Allowing multiple containers to mount the same volume read-write. This is particularly useful in a cloud scenario where logs or output can be created in the same location from any number of containers.
+ 
+Given that we can now use VIC to create an NFS share and given that it's now possible to re-configure a VCH to add a Volume store, we can expose a VIC volume as read-write shared storage to any number of containers within the VCH. Here's how it's done.
 
+Let's start using the container-network example from above. Once the nfs server is running, we need to reconfigure the VCH to add that NFS share as a volume store. In order to do this, all of the `--volume-store` arguments need to be specified, including ones previously configured. 
 
+Here's the vic-machine options I used when installing the VCH into a vSphere cluster:
+```
+vic-machine create --bridge-network dev-cert --compute-resource Minis --debug 1 --image-store iSCSI-nvme --name dev-cert --password xxxxxxx --public-network ExternalNetwork --target bcorrie-test6.eng.vmware.com/Datacenter --thumbprint xxxxxxx --timeout 500s --tls-cname *.eng.vmware.com --user administrator@vsphere.local --volume-store iSCSI-nvme/volumes/minis-dev-cert:default --container-network ExternalNetwork
+```
 
+Once I've created the NFS share above, I'm going to make the following subsequent call to vic-machine:
+```
+vic-machine-linux configure --target bcorrie-test6.eng.vmware.com/Datacenter --thumbprint xxxxxxx --timeout 500s --user administrator@vsphere.local --password xxxxxxx --volume-store 'nfs://10.118.68.238/mnt/nfs-vol?uid=0&gid=0&proto=tcp:nfs-store' --compute-resource Minis --name dev-cert --volume-store iSCSI-nvme/volumes/minis-dev-cert:default
+```
+This will reconfigure the VCH to add the NFS share as a datastore. As I mentioned above, you need to specify the original datastores in addition to the new one. Note also the user and group ids specified. That's important to specify so that it's consistent with what's in the NFS server. 
 
+The reconfiguration will cause a power-cycle of the VCH endpoint VM, the same as an upgrade. Once the power-cycle has completed, type `docker info` and if everything worked correctly, you should see a volume store called `nfs-store` in addition to one called `default`. If the volume store doesn't show up, it's likely that something was misconfigured. The best place to look for a reason why is the Port Layer logs in the vic-admin portal, which is at `<vch-address>:2378`. If you do have a mis-configured volume store, you can't currently remove or modify it, but you can add another one with the correct configuration using the same approach. 
+
+Once the volume store is added, let's test it.
+
+```
+docker volume create --name nfs-vol-1 --opt VolumeStore=nfs-store
+docker run -v nfs-vol-1:/data -it debian
+$ touch /data/from-c1
+$ ls /data
+from-c1
+```
+Then in another terminal, start another container in the same VCH using the same volume:
+
+```
+docker run -v nfs-vol-1:/data -it debian
+$ touch /data/from-c2
+$ ls /data
+from-c1 from-c2
+```
