@@ -1,0 +1,30 @@
+#!/bin/bash
+
+export_folder="${EXPORT_FOLDER:-/home/nfs}"
+lockd_port="${LOCKD_PORT:-32768}"
+mountd_port="${MOUNTD_PORT:-32767}"
+export_opts="${EXPORT_OPTS:-*(rw,no_root_squash,no_subtree_check)}"
+sleep_bin="/tmp/nfs-sleep"
+
+cleanup() 
+{
+   pid=$(pidof $sleep_bin)
+   echo "stopping nfs-server"
+   kill $pid
+}
+
+trap cleanup EXIT
+modprobe nfs
+[ ! -d $export_folder ] && mkdir $export_folder
+mkdir /run/sendsigs.omit.d
+echo "$export_folder $export_opts" > /etc/exports
+sed -i "s/RPCMOUNTDOPTS=\"--manage-gids\"/RPCMOUNTDOPTS=\"--manage-gids -p $mountd_port\"/g" /etc/default/nfs-kernel-server
+echo "fs.nfs.nlm_tcpport = $lockd_port" >> /etc/sysctl.conf
+echo "fs.nfs.nlm_udpport = $lockd_port" >> /etc/sysctl.conf
+sysctl --system
+service rpcbind start
+service nfs-kernel-server start
+/usr/sbin/exportfs -av
+ln -s /usr/bin/sleep /tmp/nfs-sleep
+$sleep_bin infinity
+
