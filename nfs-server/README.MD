@@ -1,4 +1,4 @@
-** VIC NFS File Server Container **
+**VIC NFS File Server Container**
 
 This is a Dockerfile for a container that runs a simple NFS server in VIC.
 
@@ -14,7 +14,7 @@ VIC is different in that a container VM gets its own kernel and can load its own
 
 So you'll notice that `kmod` is loaded in the Dockerfile and the script that starts the nfs server loads the kernel module. This level of kernel isolation, combined with peristent storage that's completely independent of any host is a great example of VIC container security in action.
 
-** Building the container **
+**Building the container**
 
 Build the container with regular Docker, just as you would any other container. I've built one to DockerHub at bensdoings/nfs-server:latest which you're welcome to try at your leisure.
 
@@ -30,7 +30,7 @@ Given that multiple services need to be run, I've used the same approach I used 
 
 I've made the server configurable so that the directory to be exported, the ports to be used and the export options can all be specified, but with sensible defaults. The server is designed to only have one export. It would be simple to modify it for multiple.
 
-** Running the container **
+**Running the container**
 
 The NFS server needs 4 ports exposed. The defaults are: `111`, `2049`, `32767` and `32768`. The latter are needed by `lockd` and `mountd` and are configurable as `LOCKD_PORT` and `MOUNTD_PORT` environment variables. They need to be hard-coded so that appropriate ports can be exposed in the `docker run` command.
 
