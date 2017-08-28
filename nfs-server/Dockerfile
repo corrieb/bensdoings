@@ -1,6 +1,8 @@
 FROM debian
 
-RUN apt-get update && apt-get install -yy vim procps kmod nfs-kernel-server
+RUN apt-get update && \
+    apt-get install -yy procps kmod nfs-kernel-server && \
+    mkdir /run/sendsigs.omit.d
 
 CMD [ "/etc/rc.local" ]
 
