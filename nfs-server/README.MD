@@ -2,7 +2,9 @@
 
 This is a Dockerfile for a container that runs a simple NFS server in VIC.
 
-Shared Read/Write storage absolutely has its place. Binary dependencies, a shared place to write logs etc. This NFS server gives you the ability to expose either a VIC volume or some ephemeral scratch space to multiple NFS clients, which could potentially be other containers. The downside to that approach is that any client container wanting to mount an NFS share would need to have NFS depndencies loaded and running, which is pretty leaky abstraction. This is an infrastructure concern and this is what the Volume abstraction is for.
+Shared read-write storage absolutely has its place. Binary dependencies, a shared place to write logs etc. This NFS server gives you the ability to expose either a VIC volume or some ephemeral scratch space to multiple NFS clients, which could potentially be other containers. 
+
+Explicitly mounting NFS shares into a client container is ugly though. It requires that the container have the dependencies baked into it and the NFS client services running, which is a leaky abstraction. This is an infrastructure concern and this is what the Volume abstraction is for.
 
 So In VIC 1.2, we have built-in support for NFS volumes, so an NFS mount can be registered as a volume store and containers can sub-allocate shared read-write storage from it. That solves the problem of the client container needing to have any awareness of NFS. When you combine that with the ability in 1.2 to reconfigure a Virtual Container Host, I'm going to show you how you can can turn a persistent VMDK in a Volume Store into an NFS share that any other container in the VCH can sub-allocate from.
 
