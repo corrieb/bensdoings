@@ -6,7 +6,9 @@ Shared read-write storage absolutely has its place. Binary dependencies, a share
 
 Explicitly mounting NFS shares into a client container is ugly though. It requires that the container have the dependencies baked into it and the NFS client services running, which is a leaky abstraction. This is an infrastructure concern and this is what the Volume abstraction is for.
 
-So In VIC 1.2, we have built-in support for NFS volumes, so an NFS mount can be registered as a volume store and containers can sub-allocate shared read-write storage from it. That solves the problem of the client container needing to have any awareness of NFS. When you combine that with the ability in 1.2 to reconfigure a Virtual Container Host, I'm going to show you how you can can turn a persistent VMDK in a Volume Store into an NFS share that any other container in the VCH can sub-allocate from.
+So In VIC 1.2, we have built-in support for NFS volumes, so an NFS mount can be registered as a volume store and containers can sub-allocate shared read-write storage from it. That solves the problem of the client container needing to have any awareness of NFS. 
+
+When you combine that with the ability in VIC 1.2 to reconfigure a Virtual Container Host, I'm going to show you how you can use the NFS server to expose any VMDK as read-write storage to any container in a VCH completely transparently. That's cool!
 
 *An example of Kernel Modules in a container VM*
 
