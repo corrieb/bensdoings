@@ -130,16 +130,16 @@ New in VIC 1.2 is the ability to create a container volume store from an NFS sha
  
 Given that we can now use VIC to create an NFS share and given that it's now possible to re-configure a VCH to add a Volume store, we can expose a VIC volume as read-write shared storage to any number of containers within the VCH. Here's how it's done.
 
-Let's start using the container-network example from above. Once the nfs server is running, we need to reconfigure the VCH to add that NFS share as a volume store. In order to do this, all of the `--volume-store` arguments need to be specified, including ones previously configured. 
+Let's start using the container-network example from above. Once the NFS server is running, we need to reconfigure the VCH to add that NFS share as a volume store. In order to do this, all of the `--volume-store` arguments need to be specified, including ones previously configured. 
 
 Here's the vic-machine options I used when installing the VCH into a vSphere cluster:
 ```
-vic-machine create --bridge-network dev-cert --compute-resource Minis --debug 1 --image-store iSCSI-nvme --name dev-cert --password xxxxxxx --public-network ExternalNetwork --target bcorrie-test6.eng.vmware.com/Datacenter --thumbprint xxxxxxx --timeout 500s --tls-cname *.eng.vmware.com --user administrator@vsphere.local --volume-store iSCSI-nvme/volumes/minis-dev-cert:default --container-network ExternalNetwork
+vic-machine create --target bcorrie-test6.eng.vmware.com/Datacenter --thumbprint xxxxxxx --user administrator@vsphere.local --password xxxxxxx --compute-resource Minis --bridge-network dev-cert --debug 1 --image-store iSCSI-nvme --name dev-cert --public-network ExternalNetwork --timeout 500s --tls-cname *.eng.vmware.com --volume-store iSCSI-nvme/volumes/minis-dev-cert:default --container-network ExternalNetwork
 ```
 
 Once I've created the NFS share above, I'm going to make the following subsequent call to vic-machine:
 ```
-vic-machine-linux configure --target bcorrie-test6.eng.vmware.com/Datacenter --thumbprint xxxxxxx --timeout 500s --user administrator@vsphere.local --password xxxxxxx --volume-store 'nfs://10.118.68.238/mnt/nfs-vol?uid=0&gid=0&proto=tcp:nfs-store' --compute-resource Minis --name dev-cert --volume-store iSCSI-nvme/volumes/minis-dev-cert:default
+vic-machine-linux configure --target bcorrie-test6.eng.vmware.com/Datacenter --thumbprint xxxxxxx --user administrator@vsphere.local --password xxxxxxx --volume-store 'nfs://10.118.68.238/mnt/nfs-vol?uid=0&gid=0&proto=tcp:nfs-store' --compute-resource Minis --name dev-cert --volume-store iSCSI-nvme/volumes/minis-dev-cert:default
 ```
 This will reconfigure the VCH to add the NFS share as a datastore. As I mentioned above, you need to specify the original datastores in addition to the new one. Note also the user and group ids specified. That's important to specify so that it's consistent with what's in the NFS server. 
 
@@ -162,3 +162,5 @@ $ touch /data/from-c2
 $ ls /data
 from-c1 from-c2
 ```
+
+You can manage the lifecycle of the NFS volumes just the same way as any other volume. If you want to delete the NFS server and the VCH, but keep the NFS volumes, this works just fine! That means that NFS volume data, backed by a VIC volume is just as persistent and easy to back up as any other VIC volume.
