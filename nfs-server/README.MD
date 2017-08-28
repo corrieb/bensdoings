@@ -44,14 +44,18 @@ Lastly the export configuration by default is `*(rw,no_root_squash,no_subtree_ch
 
 As you'll see from the rc.local file, all of the late binding of configuration is done with the environment variables above.
 
+*Simple example*
+
 Let's start with a simple example. This assumes you've configured `DOCKER_HOST` to point to a VCH.
 
 ```
 docker run -d --name nfs-server1 -p 111:111 -p 2049:2049 -p 32767:32767 -p 32768:32768 bensdoings/nfs-server
 ```
-This uses all of the defaults described above and is using port-mapping to expose the NFS server on ports on the VCH endpoint IP. It runs the container as a daemon and you can see the output by running `docker logs nfs-server1`.
+This uses all of the defaults described above and is using port-mapping to expose the NFS server on ports on the VCH endpoint IP. It runs the container as a daemon and you can see the output by running `docker logs nfs-server1`. Note that this configuration exports a part of the container filesystem, which is ephemeral storage. See below for exporting persistent storage.
 
-Let's now start an NFS client interactively in another container and see if we can successfully mount this share.
+*Testing with an NFS client*
+
+Let's now start an NFS client interactively in another container and see if we can successfully mount this share. We can use the same nfs-server image as it has all the necessary dependencies.
 
 ```
 docker run -it bensdoings/nfs-server /bin/bash
@@ -66,6 +70,8 @@ $ ls /mnt/nfs-share
 hello
 $ exit
 ```
+*Verifying on the server*
+
 Another great feature in VIC 1.2 is the ability to exec into a container interactively. We can now exec into our nfs-server container to see if the `hello` file we created is there:
 
 ```
@@ -74,6 +80,49 @@ $ ls /home/nfs
 hello
 $ exit
 ```
+**Exporting Persistent Storage**
+
+Exporting a persistent volume as an NFS share is a simple matter of mounting the volume into the NFS server container and configuring it appropriately. This ensures that the state is persisted beyond the lifecycle of the nfs-server container or even the VCH that created the volume.
+
+```
+docker volume create --name nfs-vol --opt Capacity=5G
+docker run -d -v nfs-vol:/home/nfs --name nfs-server1 -p 111:111 -p 2049:2049 -p 32767:32767 -p 32768:32768 bensdoings/nfs-server
+```
+
+If you wanted to use a non-default location for the export, you would configure it like this:
+```
+docker run -d -v nfs-vol:/mnt/nfs-vol --name nfs-server1 -p 111:111 -p 2049:2049 -p 32767:32767 -p 32768:32768 -e EXPORT_FOLDER=/mnt/nfs-vol bensdoings/nfs-server
+```
+You then need to remember the mount point you chose because it will be used when configuring the client.
+
+**Network Configurations**
+
+Using port mapping as shown above may be a simple way to run a test, but is not appropriate for production. Firstly, it places the VCH endpoint VM in the data path, which is problematic in the scenario where the VCH needs to be reconfigured or upgraded. Secondly it's inefficient as it uses NAT. Much better to have the NFS server exposed directly on vSphere Port Group.
+
+*Container Network*
+
+The most straightforward way to achieve this - and one which is necessary if the nfs-server is to be addressable outside of the context of the VCH - is to use a container network (`--container-network` on vic-machine). This allows you to attach containers directly to a vSphere port group and the container gets a unique network identity on that port group.
+
+Here's the same example as above, but instead using a container network. Note that in VIC 1.2, we've introduced a firewall capability to a container network and so by default, you need to specify the ports you want open on the firewall. If you're using VIC 1.1.1, you should therefore eliminate the -p arguments.
+
+```
+docker volume create --name nfs-vol --opt Capacity=5G
+docker run -d -v nfs-vol:/mnt/nfs-vol --net ExternalNetwork --name nfs-server1 -p 111 -p 2049 -p 32767 -p 32768 -e EXPORT_FOLDER=/mnt/nfs-vol bensdoings/nfs-server
+docker inspect nfs-server1 | grep IPAddress 
+```
+
+Go ahead and power down the VCH endpoint VM if you want to test the isolation here. With the endpoint VM powered down, you won't be able to exec into the nfs-server, but the client-server communications continue to function.
+
+*Changing Ports*
+
+If you want to specify the ports for lockd and mountd, these can be specified as follows:
+
+```
+docker run -d -v nfs-vol:/mnt/nfs-vol --net ExternalNetwork --name nfs-server1 -p 111 -p 2049 -p 4001 -p 4002 -e EXPORT_FOLDER=/mnt/nfs-vol -e MOUNTD_PORT=4001 -e LOCKD_PORT=4002 bensdoings/nfs-server
+```
+The other two ports are currently fixed as these are standard NFS ports. On a container-network, there are no issues with port conflicts since every container gets its own network identity.
+
+
 
 
 
