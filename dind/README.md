@@ -4,7 +4,7 @@ This does not come with the same caveats as running Docker in *actual* Docker. T
 
 These Dockerfiles are very easy to extend to add your own functionality. 
 
-(Note that only the Photon versions are the only ones that work on VIC 0.9.0 due to https://github.com/vmware/vic/issues/3858)
+Note that these "hacks" have morphed into official support in VIC 1.2 with the VIC DCH Photon image.
 
 **Usage**
 
@@ -40,8 +40,9 @@ _Note that the Photon image is the smallest and is the only OS image that perfec
 
 This starts a Docker host with an IP address on the public vSphere network assigned to the Virtual Container Host
 (Note that this assumes that the public network was added on VCH creation as a ``--container-network``)
+(Note that in VIC 1.2, you need to expose ports explicitly on container networks and in prior versions, this option won't be recognized)
 
-``docker run -d -net=<vsphere-public-network> <registry>/<imageid:version>``
+``docker run -d -net=<vsphere-public-network> -p 2376 <registry>/<imageid:version>``
 
 Find IP address of the deployed VM: ``docker inspect <containerid> | grep IPAddress``
 
@@ -52,7 +53,7 @@ Example:
 ```
 # Start by talking to the VIC endpoint - note we name the container in this example and use the name in inspect
 export DOCKER_HOST=<vic-endpoint-ip:port>
-docker run -d --name=dind-test --net=ExternalNetwork bensdoings/dind-debian
+docker run -d --name=dind-test --net=ExternalNetwork -p 2376 bensdoings/dind-debian
 docker inspect dind-test | grep IPAddress
 
 # Now you can talk to the nested Docker endpoint
@@ -75,7 +76,7 @@ Add ``-m <mem> and --cpuset-cpus <vcpus>`` on the docker command-line to set res
 Example:
 
 ```
-docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork bensdoings/dind-photon
+docker run -d --cpuset-cpus 4 -m 4g --net=ExternalNetwork -p 2376 bensdoings/dind-photon
 ```
 
 **Alternative to using docker -H**
@@ -89,7 +90,7 @@ Note that in the Dockerfiles, ``$DOCKER_OPTS`` is added as an environment variab
 Example:
 
 ```
-docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork bensdoings/dind-photon
+docker run -e DOCKER_OPTS='--insecure-registry 10.118.69.100' -d --net=ExternalNetwork -p 2376 bensdoings/dind-photon
 docker -H 10.118.69.85:2376 pull 10.118.69.100/test/foobedoo
 ```
 **Running dockerd locally (not exposed remotely)**
@@ -107,7 +108,7 @@ The example images create unique server keys when started and require you to add
 This example creates a Derek user and copies over an appropriate public key:
 
 ```
-docker run -d --name=dind-test-ssh --net=ExternalNetwork bensdoings/dind-debian-ssh
+docker run -d --name=dind-test-ssh --net=ExternalNetwork -p 22 -e LOCAL=true bensdoings/dind-debian-ssh
 docker inspect dind-test-ssh | grep IPAddress
 docker exec -d dind-test-ssh /usr/bin/adduserkey derek "$(cat /home/derek/.ssh/id_rsa.pub)"
 ssh derek@10.118.67.210
