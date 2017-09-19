@@ -1,15 +1,27 @@
 #!/bin/bash
+set -e 
 
-# Builds against vic-machine-base:latest
+BUILD_FROM_OVA=false
 
+# build for pushing to dockerhub
 REPO_NAME="bensdoings"
-MAP_VERSION="1.2"
-VERSION="1.2.0"
+
+# build for pushing to local registry
+# REPO_NAME="10.118.69.29/vic-machine"
+
+MAP_VERSION="1.1"
+VERSION="1.1.1"
 
 actions=( "create" "debug" "delete" "inspect" "ls" "rollback" "upgrade" "thumbprint" "firewall-allow" "firewall-deny" "dumpargs" "direct" )
 
-cd ../../vic-machine-base/$VERSION
+if [ "$BUILD_FROM_OVA" = true ]; then
+  cd ../vic-machine-base/OVA
+else
+  cd ../vic-machine-base/$VERSION
+fi
+
 docker build -t vic-machine-base .
+
 cd ../../actions/$MAP_VERSION
 cp ../Dockerfile* .
 

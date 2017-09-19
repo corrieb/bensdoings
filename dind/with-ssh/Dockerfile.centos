@@ -23,8 +23,7 @@ RUN yum install -y \
 # Uncomment to add a default user to the image
 #RUN useradd -s /bin/bash -m -p $(openssl passwd -1 vmware) vmware \
 #    && su vmware && mkdir ~/.ssh && chmod 700 ~/.ssh \
-#    && echo "vmware   ALL=(ALL:ALL) ALL" >> /etc/sudoers \
-
+#    && echo "vmware   ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 EXPOSE 2376 22
 

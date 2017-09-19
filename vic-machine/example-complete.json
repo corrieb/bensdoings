@@ -1,5 +1,5 @@
 {
-   "version": "1.1",
+   "version": "1.2",
    "vch": {
       "name": "myVCH",
       "compute": {
@@ -37,17 +37,20 @@
          },
          "container": [
             {
-               "port_group": "vsphere-net-dhcp"
+               "port_group": "vsphere-net-dhcp",
+               "firewall": "Open"
             },
             {
                "port_group": "vsphere-net2",
                "alias": "mynetwork2",
                "ip_range": "172.16.1.0/24",
                "gateway": "172.16.1.1/16",
-               "dns": "8.8.8.8"
+               "dns": "8.8.8.8",
+               "firewall": "Published"
             }
          ],
-         "dns_server": "8.8.8.8"
+         "dns_server": "8.8.8.8",
+         "asymmetric_routes": true
       },
       "storage": {
          "image_store": "iSCSI-nas-2",
@@ -74,7 +77,11 @@
       },
       "endpoint_vm": {
          "vcpus": "1",
-         "memory_mb": "2048"
+         "memory_mb": "2048",
+         "syslog_address": "tcp://10.118.67.111:514"
+      },
+      "container": {
+         "name_convention": "{name}-{id}"
       },
       "debug": {
          "enable_ssh": true,
@@ -95,6 +102,7 @@
    },
    "registry": {
       "insecure_registries": [ "10.118.66.101" ],
+      "whitelist_registries": [ "10.118.66.101" ],
       "registry_ca_files": ["/path/to/ca_cert1", "/path/to/ca_cert2"],
       "image_fetch_proxy": {
          "http": "http://fqdn_or_ip:port",

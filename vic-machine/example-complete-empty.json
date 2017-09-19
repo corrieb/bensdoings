@@ -1,5 +1,5 @@
 {
-   "version": "1.1",
+   "version": "1.2",
    "vch": {
       "name": "",
       "compute": {
@@ -41,10 +41,12 @@
                "alias": "",
                "ip_range": "",
                "gateway": "",
-               "dns": ""
+               "dns": "",
+               "firewall": ""
             }
          ],
-         "dns_server": ""
+         "dns_server": "",
+         "asymmetric_routes": false
       },
       "storage": {
          "image_store": "",
@@ -71,7 +73,11 @@
       },
       "endpoint_vm": {
          "vcpus": "",
-         "memory_mb": ""
+         "memory_mb": "",
+         "syslog_address": ""
+      },
+      "container": {
+         "name_convention": ""
       },
       "debug": {
          "enable_ssh": false,
@@ -92,6 +98,7 @@
    },
    "registry": {
       "insecure_registries": [],
+      "whitelist_registries": [],
       "registry_ca_files": [],
       "image_fetch_proxy": {
          "http": "",
