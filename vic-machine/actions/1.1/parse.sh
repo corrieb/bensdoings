@@ -13,22 +13,6 @@ if [ $# -le 1 ]; then
    exit 1
 fi
 
-if [ ! -f $1 ]; then
-   echo "Config file $1 does not exist - use -v <file>:/config"
-   exit 1
-fi
-
-if [ ! -f $2 ]; then
-   echo "Map file $2 does not exist"
-   exit 1
-fi
-
-config_version=$(cat $1 | jq -r '.version')
-if [ $version != $config_version ]; then
-   echo "Config file version: $config_version does not match parser version: $version"
-   exit 1
-fi
-
 kv_map=$(cat $2 | jq -c '.key_value' | sed "s/\"\././g; s/\"\,/,/g; s/\"\}/}/g")
 kv_query="$kv_map | to_entries[] | select (.value | length > 0) | .key,.value"
 

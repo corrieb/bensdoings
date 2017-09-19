@@ -1,7 +1,7 @@
 FROM vic-machine-base:latest
 
-COPY parse.sh map-create.json /
+COPY validate.sh parse.sh map-create.json /
 
 WORKDIR /config
 
-CMD /bin/sh -c "echo $(/parse.sh /config/config.json /map-create.json)"
+CMD /bin/sh -c "echo $(/validate.sh /config/config.json /map-create.json && /parse.sh /config/config.json /map-create.json)"

@@ -1,7 +1,7 @@
 FROM vic-machine-base:latest
 
-COPY parse.sh map-inspect.json /
+COPY validate.sh parse.sh map-inspect.json /
 
 WORKDIR /config
 
-CMD /bin/sh -c "/vic/vic-machine-linux inspect $(/parse.sh /config/config.json /map-inspect.json)"
+CMD /bin/sh -c "/validate.sh /config/config.json /map-inspect.json && /vic/vic-machine-linux inspect $(/parse.sh /config/config.json /map-inspect.json)"
