@@ -5,7 +5,7 @@ set -e
 #   - Config file
 #   - Map file
 
-version="1.1"
+version="1.2"
 unique=e09f3rp9ac09ajjrw3r09aemriwelkm
 
 if [ $# -le 1 ]; then 

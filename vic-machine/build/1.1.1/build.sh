@@ -15,9 +15,9 @@ VERSION="1.1.1"
 actions=( "create" "debug" "delete" "inspect" "ls" "rollback" "upgrade" "thumbprint" "firewall-allow" "firewall-deny" "dumpargs" "direct" )
 
 if [ "$BUILD_FROM_OVA" = true ]; then
-  cd ../vic-machine-base/OVA
+  cd ../../vic-machine-base/OVA
 else
-  cd ../vic-machine-base/$VERSION
+  cd ../../vic-machine-base/$VERSION
 fi
 
 docker build -t vic-machine-base .
