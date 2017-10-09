@@ -29,6 +29,10 @@ There's an existing image called `evarga/jenkins-slave` that is a reasonable gen
 
 So my first recommendation when building any Docker image is this: Think about what the core function of your image is and start with a parent image that best encapsulates that core function. In this particular instance, the core function is Maven, not sshd. So start from a Maven base image with the JDK and guest libraries you want and build up from there.
 
+That said, the Dockerfile format is a little limited in its inheritance model and this may mean that the parent image carries baggage that you don't want. As a concrete example, the `maven:3.5.0` docker image assumes that you want to run your build as root and codifies that in by specifying an anonymous volume mount at `/root/.m2`. Well, what if you want to have sshd run as a jenkins user? Then you'd have to specify a volume mount at `/home/jenkins/.m2`, but there's no way of preventing the image creating an anonymous volume at `/root/.m2` which just ends up polluting the datastore for every slave. At the time of writing, there is no way to remove this kind of baggage from the parent and the [debate](https://github.com/moby/moby/issues/3465) has been rolling on since 2014. 
+
+The only way to avoid parent baggage is to cut and paste what you need from the parent Dockerfile and fold it into your image.
+
 _Image Layers_
 
 Every line in a Dockerfile presents as an image layer. These layers are not necessarily addressable as parent images, in fact they're really a caching optimization - an ability for the Docker engine to optimize builds. However, image layers add a small amount of overhead in production, both in terms of how long it takes to pull images and datastore footprint. As such, it's trying to minimize the number of image layers where possible. For example, linking multiple lines together for a single RUN clause is a common practice. This will create a single image that encapsulates the output of all the commands run.
