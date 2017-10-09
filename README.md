@@ -1,9 +1,15 @@
 # bensdoings
 Hacks around vSphere Integrated Containers
 
-This repository is a place for various hacks and experimental work around vSphere Integrated Containers. Primarily it's a way to inspire others as to the flexibility and capabilities of VIC.
+This repository is a place for various hacks and experimental work around vSphere Integrated Containers. Primarily it's a way to inspire others as to the flexibility and capabilities of VIC. 
 
-**DinD (aka Docker-in-Docker aka Docker-in-VIC)**
+Many of these hacks are early work that will eventually be integrated into the product. As an example, the DinD work is now formalized in VIC engine as "DCH" - a container image containing Docker engine that ships inside the product.
+
+**nfs-server**
+
+In VIC 1.2, you can use NFS to provide read/write shared volume support to clients. This hack presents an NFS server that runs in VIC which is the ideal way to expose a VMDK as an NFS mount to clients.
+
+**DinD (aka Docker-in-Docker aka Docker-in-VIC)** (now DCH support in VIC engine 1.2)
 
 Do you need a regular Docker Host? Do you want to be able to treat Docker Hosts as ephemerally as Containers? Then this is what you need. Various Dockerfiles, instructions and scripts on how to spin up vanilla Docker hosts using VIC. This project underpins many of the other ones, such as the Docker Datacenter work.
 
