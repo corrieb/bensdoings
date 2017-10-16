@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 usage()
 {
    echo "Usage: start-cluster.sh <num-slaves>"
@@ -10,8 +12,10 @@ if [ $# -lt 1 ]; then usage; fi
 
 . ./env.sh
 
-docker network create spark-net
+echo "Creating network $SPARK_NET"
+docker network create $SPARK_NET > /dev/null
 
+echo "Creating master node $MASTER_CTR"
 docker run -d \
   --name $MASTER_CTR \
   -e _JAVA_OPTIONS="$MASTER_JVM_OPTS" \
@@ -22,8 +26,9 @@ docker run -d \
   -m $MASTER_MEM \
   -p $MASTER_WEBUI_PORT:$MASTER_WEBUI_PORT \
   --net $SPARK_NET \
-  bensdoings/spark-master
+  bensdoings/spark-master > /dev/null
 
+echo "Creating $SLAVE_COUNT slave nodes concurrently"
 for ((i=1; i<=$SLAVE_COUNT; i++))
 do
   docker run -d \
@@ -36,6 +41,13 @@ do
     -m $SLAVE_MEM \
     -p $SLAVE_WEBUI_PORT \
     --net $SPARK_NET \
-    bensdoings/spark-slave &
+    bensdoings/spark-slave > /dev/null &
   sleep 1
 done
+
+echo "Waiting for slaves to come up..."
+while [ $(docker ps -f "name=$SLAVE_CTR" -q | wc -l) -lt $SLAVE_COUNT ]; do
+  sleep 2
+done
+
+echo "Cluster started!"
