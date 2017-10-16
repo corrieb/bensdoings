@@ -1,5 +1,9 @@
 #!/bin/bash
 
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-docker network rm spark-net
+. ./env.sh
+
+CONTAINER_IDS=$(docker ps -f "name=$MASTER_CTR" -f "name=$SLAVE_CTR" -q)
+
+docker stop $CONTAINER_IDS
+docker rm $CONTAINER_IDS
+
