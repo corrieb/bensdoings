@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 usage()
 {
@@ -26,7 +27,7 @@ docker run -d \
   -m $MASTER_MEM \
   -p $MASTER_WEBUI_PORT:$MASTER_WEBUI_PORT \
   --net $SPARK_NET \
-  bensdoings/spark-master > /dev/null
+  $DOCKER_MASTER_IMAGE > /dev/null
 
 echo "Creating $SLAVE_COUNT slave nodes concurrently"
 for ((i=1; i<=$SLAVE_COUNT; i++))
@@ -41,7 +42,7 @@ do
     -m $SLAVE_MEM \
     -p $SLAVE_WEBUI_PORT \
     --net $SPARK_NET \
-    bensdoings/spark-slave > /dev/null &
+    $DOCKER_SLAVE_IMAGE > /dev/null &
   sleep 1
 done
 
