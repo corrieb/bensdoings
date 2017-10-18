@@ -5,7 +5,7 @@ sleep_bin="/tmp/spark-sleep"
 cleanup() 
 {
    pid=$(pidof $sleep_bin)
-   echo "stopping spark slave"
+   echo "stopping spark slave..."
    kill $pid
 }
 
