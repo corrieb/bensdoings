@@ -28,7 +28,7 @@
       "--key": ".vch.auth.server.key_file",
       "--cert": ".vch.auth.server.cert_file",
       "--endpoint-cpu": ".vch.endpoint_vm.vcpus",
-      "--endpoint-mem": ".vch.endpoint_vm.memory_mb",
+      "--endpoint-memory": ".vch.endpoint_vm.memory_mb",
       "--target": ".vcenter.address_datacenter",
       "--thumbprint": ".vcenter.credentials.thumbprint",
       "--user": ".vcenter.credentials.admin_user",
