@@ -16,6 +16,7 @@ cleanup()
 trap cleanup EXIT
 
 # Possible that container was previously killed
+[ -f /var/run ] || mkdir /var/run
 [ -f /var/run/docker.pid ] && rm /var/run/docker.pid
 
 # Write the compose script

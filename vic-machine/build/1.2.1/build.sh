@@ -4,7 +4,8 @@ set -e
 BUILD_FROM_OVA=false
 
 # build for pushing to dockerhub
-REPO_NAME="vic-machine-local"
+REPO_NAME="bensdoings"
+#REPO_NAME="vic-machine-local"
 
 # build for pushing to local registry
 # REPO_NAME="10.118.69.29/vic-machine"
