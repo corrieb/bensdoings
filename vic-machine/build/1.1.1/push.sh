@@ -14,8 +14,8 @@ actions=( "create" "debug" "delete" "inspect" "ls" "rollback" "upgrade" "thumbpr
 
 for i in "${actions[@]}"
 do
-   docker tag $REPO_NAME/vic-machine-$i:$VERSION $REPO_NAME/vic-machine-$i:latest
+#   docker tag $REPO_NAME/vic-machine-$i:$VERSION $REPO_NAME/vic-machine-$i:latest
    docker push $REPO_NAME/vic-machine-$i:$VERSION
-   docker push $REPO_NAME/vic-machine-$i:latest
+#   docker push $REPO_NAME/vic-machine-$i:latest
 done
 
