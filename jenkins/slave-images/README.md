@@ -69,6 +69,53 @@ Once you have success running as root in a shell, try the same thing running as 
 
 **Data Persistence**
 
+There are three primary reasons why you might want Data Persistence in your Jenkins Slave.
+
+1. Dependencies and caching. Dependency management tools like Maven download large numbers of immutable resouces. If your slave is ephemeral, it's silly to have to download for every build. You may also have a toolchain that you want to mount to the container.
+2. Pipelines. If you need somewhere to put the output of one step to be consumed by another.
+3. Artifacts. Once your build is done, the artifacts need to be persisted. Where should they go?
+
+VIC offers two kinds of persistence: VMDK-based disks which are locked by a running container or NFS shared RW volumes. You'll see examples of both used in the documentation here. When to use which? 
+
+_VMDK disks_
+
+Many dependency management systems need exclusive access to their resources. Maven repostory and Docker image cache are good examples of this. As such, directly attached VMDKs are going to offer the best performance for persistence and caching. It's possible to "carry" VMDKs across multiple invocations of a slave, which could work well in a multi-slave serial pipeline scenario. 
+
+However, the biggest issue with exclusive volumes is that there is no current way to "pool" them for use by ephemeral slaves. Let's say for example that I want to define a maximum number of Maven Slaves at 10 and I want Jenkins to manage the number of slaves automatically for me. It will happy do that for me, but if you want exclusive volumes, there's no way to have a generic configuration for a single slave. Each slave instance would have to be configured with a different named volume. Anonymous volumes are useless because there's no reliable way of reusing them. What you really want is to maintain a pool of volumes that can be late-bound to a slave when it's started. Frankly what would be even better would be a single sharable read-only populated volume that gets an ephermal RW layer added to it when it's mounted. You can fake that by baking your dependencies into your Docker image, but that's really an ugly mixing of concerns.
+
+Another way around the pooling problem is to set up a local registry of some kind and keep the slaves stateless. Something like artifactory for Maven and a local registry for Docker. This means that the cache is centralized and while the slaves still need to download resources, at least they're not pulling them from far away.
+
+_NFS mounts_
+
+NFS is a great way for containers to share state. See HERE for an NFS server that runs in VIC. You can configure your Virtual Container Host to sub-allocate from an NFS share and then choose mount points for the container VMs.
+
+The main limitations of NFS volumes are:
+
+1. Your NFS share is a finite size. If it's being shared by large numbers of containers over time, garbage collection can be an issue
+2. VIC is opinionated to the layout of a volume on an NFS share. It's possible to point a VIC volume at existing data, but it requires the use of soft links to be set up on the NFS server. See HERE.
+
+**Security**
+
+There are two important entrypoints you want to secure with a setup such as this. 
+
+1. Access to the VCH control plane which can be secured using certificates. These certificates can be added to Jenkins and work fine with the Docker plugin. See HERE for details on configuring the Jenkins Docker plugin.
+
+2. Access to the slave itself. SSH access provides various means of authentication, although often what happens is that a trivial password is baked into the Docker image. This is the case in all the slave examples I've seen and it's important to find alternatives to this. Even if the slave is short-lived and even if the port mapping being used means that it's difficult to predict which port is in use, this is not fool-proof. 
+
+A good alternative would be for the Jenkins Docker plugin to talk to the slaves on a Docker network that's isolated - so that only the master ping the slaves. Unfortunately it doesn't give you that option - the only one it presents is mapping ports on a public IP.
+
+**Resource Management**
+
+VIC makes it easy to configure memory and CPU for a container, which translates to vCPUs and VM memory. Finding the right settings for a slave for a particular job is typically a process of trial and error. vSphere memory and CPU monitoring is awesome for figuring out what your particular application needs: Just over-provision, look at the active memory statistics and CPU and then shrink to fit. 
+
+Another unfortunate limitation of the Docker Jenkins plugin is that it doesn't offer the correct option to set CPUs, so that's a Pull Request I should probably create myself. Setting memory however works just fine.
+
+The question of how long a slave should run for is also a resource management consideration. The Jenkins Docker plugin offers a convenient timeout, so that if you have a lot of builds queued, the slave will get reused, but if it's idle for say 10 minutes, it can be removed. Ultimately the whole point of using ephemeral resource is to only consume resource in your vSphere cluster when you need it, so keeping idle slaves around for long periods of time is counter to that goal.
+
+
+
+
+
 
 
 
