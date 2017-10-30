@@ -61,11 +61,11 @@ jenkins@1f3cdcf7d0d6:~$ mvnw clean install
 ```
 Note that the instructions on the build command and the URL for the git clone command came directly from https://github.com/spring-projects/spring-boot.
 
-Assuming this ran successfully - and why wouldn't it? Works for me! - you should see the build process download a large number of dependencies into the maven repo. This is the 1GB mounted VMDK volume that would have been created in the default volume store.
+Assuming this ran successfully (and why wouldn't it? Works for me!) you should see the build process download a large number of dependencies into the maven repo. This is the 1GB mounted VMDK volume that would have been created in the default volume store.
 
 So... how did it go?
 
-Well, it crashed for me first time around running a test. This is the trial and error part. What went wrong?
+Well, actually it crashed for me first time around running a test. This is the trial and error part. What went wrong?
 
 ```
 [ERROR] org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
@@ -115,11 +115,24 @@ Remote FS Root Mapping: /var/jenkins_home
 Pull Strategy: Pull Once and Update Latest
 ```
 
-All of the options above should be pretty obvious. Note the important factor that the use of the named volume means that we cannot have multiple instances of this template running concurrently. Neither can you choose shared RW storage because a Maven repo itself needs exclusive access. 
+All of the options above should be pretty obvious. Note the important factor that the use of the named volume means that we cannot have multiple instances of this template running concurrently. Neither can you choose shared RW storage because a Maven repo itself needs exclusive access. See the discussion HERE.
 
 _Create the Project_
 
 For simplicity, we'll create a FreeStyle project called "spring-boot-master". We then need to configure the project. 
+
+```
+Restrict where this project can be run: maven (this is the label we set up on the template above - should be offered in a drop down)
+Source Code Management: Git
+ - Repository URL: `https://github.com/spring-projects/spring-boot.git`
+Add a Build Step: Execute Shell
+ - Command: `mvnw clean install`
+```
+Once you've added these custom fields, hit the "Build Now" button and see what happens. Note that the first time you run it, your VCH may be pulling the slave image and this may take some time. If you suspect something is wrong with launching the container VM, you can see the Docker plugins output in the general Jenkins system log file.
+
+If a slave does come up, but then quickly goes away again or becomes inactive, there's likely something wrong with they way you've authenticated to it. Check the Jenkins log file.
+
+Once the slave comes up and connects, if the build fails, you can investigate the reasons why in the job log file.
 
 
 
