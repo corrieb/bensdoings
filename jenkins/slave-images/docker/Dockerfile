@@ -1,4 +1,5 @@
-FROM 10.118.68.182/ben/dch-photon:1.13
+#FROM <my-vic-registry-ip>/default-project/dch-photon:1.13 
+FROM vmware/dch-photon:1.13
 
 ARG JENKINS_USER="jenkins"
 ARG JENKINS_PWD="jenkins"
